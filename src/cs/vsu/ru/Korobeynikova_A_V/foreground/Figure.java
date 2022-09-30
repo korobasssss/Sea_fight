@@ -1,9 +1,30 @@
 package cs.vsu.ru.Korobeynikova_A_V.foreground;
+
+import java.util.Arrays;
+
 //создать фигуры, брать потом отсюда их
 public class Figure {
 
-    private final int[] oneCell = new int[1];
-    private final int[][] twoCell = new int[2][2];
-    private final int[][] threeCell = new int[3][3];
-    private final int[][] fourCell = new int[4][4];
+    public final int[] oneCell = makeFigureOne(new int[1]); //одноклеточный кораблю
+    public final int[][] twoCell = makeFigureTwoThreeFour(0, new int[2][2]); // двуклеточный корабль
+    public final int[][] threeCell = makeFigureTwoThreeFour(0, new int[3][3]); // трехклеточный корабль
+    public final int[][] fourCell = makeFigureTwoThreeFour(0, new int[4][4]); // четырехклеточных корабль
+
+    private int[] makeFigureOne(int[] arr) {
+        arr[0] = 2;
+        return arr;
+    }
+
+    private int[][] makeFigureTwoThreeFour(int pos, int[][] arr) {
+        if (pos == 1) {
+            for (int r = 0; r < arr[0].length; r++) {
+                arr[r][0] = 2;
+            }
+        }
+        if (pos == 2) {
+            Arrays.fill(arr[0], 2);
+        }
+        return arr;
+    }
+
 }
