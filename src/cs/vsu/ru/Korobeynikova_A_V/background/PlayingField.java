@@ -1,7 +1,7 @@
 package cs.vsu.ru.Korobeynikova_A_V.background;
 //чисто поле для боя, голое или бой проводить уже тут
 public class PlayingField {
-    private final boolean[][] field = new boolean[10][10];
+    private final int[][] field = new int[10][10];
 
     private int changeToIng(char symbol) { //меняем букву на число
         int num;
@@ -23,16 +23,19 @@ public class PlayingField {
 
     public int setHit(char horizontalSymbol, int vertical) { // "удар" по клетке
         int horizontal = changeToIng(horizontalSymbol);
-        if (field[vertical][horizontal] = true) { //если на клетке есть часть корабля
-            field[vertical][horizontal] = false;
+        if (field[vertical][horizontal] == 2) { //если на клетке есть часть корабля
+            field[vertical][horizontal] = 1; //помечен
             return 1;
-        } else { return 0;} // если на клетке пусто
+        } else { // если на клетке пусто
+            field[vertical][horizontal] = 1;
+            return 0;
+        }
     }
 
     public boolean fullCheck() { // проверка на присутствие кораблей
         for (int r = 0; r < field.length; r++) {
             for (int c = 0; c < field[0].length; c++) {
-                if (field[r][c]) {return false;}
+                if (field[r][c] == 2) {return false;}
             }
         }
         return true;
