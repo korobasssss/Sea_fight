@@ -11,18 +11,18 @@ public class Figure {
     public final int[][] fourCell = makeFigureTwoThreeFour(0, new int[4][4]); // четырехклеточных корабль
 
     private int[] makeFigureOne(int[] arr) {
-        arr[0] = 2;
+        arr[0] = 1;
         return arr;
     }
 
     private int[][] makeFigureTwoThreeFour(int pos, int[][] arr) {
         if (pos == 1) {
             for (int r = 0; r < arr[0].length; r++) {
-                arr[r][0] = 2;
+                arr[r][0] = 1;
             }
         }
         if (pos == 2) {
-            Arrays.fill(arr[0], 2);
+            Arrays.fill(arr[0], 1);
         }
         return arr;
     }
