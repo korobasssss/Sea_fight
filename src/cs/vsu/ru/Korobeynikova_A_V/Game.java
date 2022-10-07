@@ -3,10 +3,12 @@ package cs.vsu.ru.Korobeynikova_A_V;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
     Scanner scanner = new Scanner(System.in);
+    Random random = new Random();
 
     private void placementOfFigures(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) { //расставляем фигуры на обоих полях
         //расставляем фигуры на поле для 1 игрока
@@ -50,16 +52,59 @@ public class Game {
     private void attacks(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) {
         int sheepCountPlayer1 = 7;
         int sheepCountPlayer2 = 7;
-        boolean flag = true;
+        int who = 1;
         while (sheepCountPlayer1 > 0 || sheepCountPlayer2 > 0) {
-            if (flag) {
-
+            if (who == 1) {
+                moveOnTheOpponent(who, fieldSecondPlayer, sheepCountPlayer2);
+                who = 2;
+            } else {
+                moveOnTheOpponent(who, fieldFirstPlayer, sheepCountPlayer1);
+                who = 1;
             }
         }
+        if (sheepCountPlayer1 == 0) System.out.println("Победил игрок 2");
+        else if (sheepCountPlayer2 == 0) System.out.println("Победил игрок 1");
     }
+    private void moveOnTheOpponent(int who, PlayingField attacked, int sheepCount) {
+        char cell = ' ';
+        int vertical; int horizontal;
+        while (cell != '0' && cell != '#') {
+            System.out.printf("Игрок %d делайте ход.", who);
+            System.out.println();
+            if (who == 1) {
+                System.out.println("По вертикали: ");
+                vertical = scanner.nextInt() - 1;
+                System.out.println("По горизонтали: ");
+                horizontal = scanner.nextInt() - 1;
+            } else {
+                vertical = random.nextInt(10);
+                horizontal = random.nextInt(10);
+            }
 
-    //private PlayingField
+            System.out.printf("Игрок %d походил по вертикали на %d и по горизонтали на %d.", who, vertical + 1, horizontal + 1);
+            System.out.println();
+            cell = attacked.getCellStatus(vertical, horizontal);
+            if (cell == '1') {
+                if (attacked.checkShepFor9Cells(vertical, horizontal)) {
+                    System.out.printf("Игрок %d ранил корабль другого игрока", who);
+                    System.out.println();
+                } else {
+                    System.out.printf("Игрок %d убил корабль другого игрока", who);
+                    System.out.println();
+                    sheepCount--;
+                }
+                attacked.setCellStatus(vertical, horizontal, '#');
+            } else if (cell == '0') {
+                System.out.println("Мимо.");
+                attacked.setCellStatus(vertical, horizontal, '#');
+            } else if (cell == '#') {
+                System.out.println("Эта зона уже поражена.");
+            }
+            if (who == 2) print(attacked.toArray());
+        }
 
+
+    }
 
 
     public void game() {
