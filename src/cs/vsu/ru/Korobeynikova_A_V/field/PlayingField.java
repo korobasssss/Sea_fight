@@ -22,10 +22,19 @@ public class PlayingField {
     }
 
     public boolean checkShepFor9Cells(int row0, int col0) {
-        for (int row = row0 - 1; row < row0 + 1; row++) {
-            for (int col = col0 - 1; col < col0 + 1; col++) {
+        int row; int col;
+
+        if (row0 - 1 < 0) { row = row0; }
+        else row = row0 - 1;
+        if (col0 - 1 < 0 ) { col = col0;}
+        else col = col0 - 1;
+
+        while(row < row0 + 1) {
+            while (col < col0 + 1) {
                 if (field[row][col] == '1') return true;
+                col++;
             }
+            row++;
         }
         return false;
     }
