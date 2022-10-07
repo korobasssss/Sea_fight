@@ -13,8 +13,8 @@ public class PlayingField {
     }
 
 
-    public boolean getCellStatus(char row, int col) { // не забыть переносить уже col - 1
-        return field[row][col] == '1';
+    public char getCellStatus(int row, int col) { // не забыть переносить уже col - 1
+        return field[row][col];
     }
 
     public void setCellStatus(int row, int col, char status) {
@@ -28,6 +28,12 @@ public class PlayingField {
             }
         }
         return false;
+    }
+
+    public void addRndField(char[][] newField) {
+        for (int row = 0; row < field.length; row++) {
+            field[row] = newField[row];
+        }
     }
 
     public int length() {

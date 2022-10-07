@@ -8,58 +8,81 @@ import java.util.Scanner;
 public class Game {
     Scanner scanner = new Scanner(System.in);
 
-    private final int sheepCountPlayer1 = 7;
-    private final int sheepCountPlayer2 = 7;
-
     private void placementOfFigures(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) { //расставляем фигуры на обоих полях
-        for (int player = 0; player < 2; player++){
-            System.out.println("Вы хотите случаную расстановку(0) или желаете самостоятельно расставить корабли(1)? ");
-            int decision = scanner.nextInt();
-            if (decision == 0) {
-                if (player != 0) {changeTheCells(fieldFirstPlayer, RandomPlacements.getRandomField());}
-                else {changeTheCells(fieldSecondPlayer, RandomPlacements.getRandomField ());}
-            } else {
-                int sheepCount = 1;
-                int sheepCells = 4;
-                Figure figure = new Figure();
-                while (sheepCount <= 4) {
-                    for (int sheep = 0; sheep < sheepCount; sheep++) {
-                        System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", sheepCells);
-                        figure.pos = scanner.nextInt();
-                        System.out.printf("Выберите местоположение %d клеточного корабля: ", sheepCells);
-                        System.out.println("По вертикали: ");
-                        int vertical = scanner.nextInt();
-                        System.out.println("По горизонтали: ");
-                        int horizontal = scanner.nextInt();
+        //расставляем фигуры на поле для 1 игрока
+        System.out.println("Игрок 1 , Вы хотите случаную расстановку(0) или желаете самостоятельно расставить корабли(1)? ");
+        int decision = scanner.nextInt();
+        if (decision == 0) {
+            changeTheCells(fieldFirstPlayer, RandomPlacements.getRandomField());
+            print(fieldFirstPlayer.toArray());
+            System.out.println();
+        } else {
+            int sheepCount = 1;
+            int sheepCells = 4;
+            Figure figure = new Figure();
+            while (sheepCount <= 4) {
+                for (int sheep = 0; sheep < sheepCount; sheep++) {
+                    System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", sheepCells);
+                    figure.pos = scanner.nextInt();
+                    System.out.printf("Выберите местоположение %d клеточного корабля: ", sheepCells);
+                    System.out.println("По вертикали: ");
+                    int vertical = scanner.nextInt();
+                    System.out.println("По горизонтали: ");
+                    int horizontal = scanner.nextInt();
 
-                        if (player != 0) {
-                            switch (sheepCells) {
-                                case 1 :
-                                    fieldFirstPlayer.setCellStatus(vertical - 1, horizontal - 1, '1'); break;
-                                case 2 :
-                                    makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[2][2]), vertical - 1, horizontal - 1); break;
-                                case 3 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[3][3]), vertical - 1, horizontal - 1); break;
-                                case 4 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[4][4]), vertical - 1, horizontal - 1); break;
-                            }
-                        } else {
-                            switch (sheepCells) {
-                                case 1 :
-                                    fieldSecondPlayer.setCellStatus(vertical - 1, horizontal - 1, '1'); break;
-                                case 2 :
-                                    makeSheep(fieldSecondPlayer, figure.makeFigureTwoThreeFour(new char[2][2]), vertical - 1, horizontal - 1); break;
-                                case 3 : makeSheep(fieldSecondPlayer, figure.makeFigureTwoThreeFour(new char[3][3]), vertical - 1, horizontal - 1); break;
-                                case 4 : makeSheep(fieldSecondPlayer, figure.makeFigureTwoThreeFour(new char[4][4]), vertical - 1, horizontal - 1); break;
-                            }
-                        }
-                        print(fieldFirstPlayer.toArray());
+                    switch (sheepCells) {
+                        case 1 : fieldFirstPlayer.setCellStatus(vertical - 1, horizontal - 1, '1'); break;
+                        case 2 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[2][2]), vertical - 1, horizontal - 1); break;
+                        case 3 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[3][3]), vertical - 1, horizontal - 1); break;
+                        case 4 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[4][4]), vertical - 1, horizontal - 1); break;
                     }
-                    sheepCells -= 1;
-                    sheepCount += 1;
+                    print(fieldFirstPlayer.toArray());
+                    System.out.println();
                 }
+                sheepCells -= 1;
+                sheepCount += 1;
             }
         }
-
+        // для робота
+        fieldSecondPlayer.addRndField(RandomPlacements.getRandomField());
     }
+
+    private void attacks(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) {
+        int sheepCountPlayer1 = 7;
+        int sheepCountPlayer2 = 7;
+        boolean flag = true;
+        while (sheepCountPlayer1 > 0 || sheepCountPlayer2 > 0) {
+            if (flag) {
+
+            }
+        }
+    }
+
+    //private PlayingField
+
+
+
+    public void game() {
+        PlayingField fieldFirstPlayer = new PlayingField();
+        PlayingField fieldSecondPlayer = new PlayingField();
+
+        // расставляем фигуры на оба поля
+        placementOfFigures(fieldFirstPlayer, fieldSecondPlayer);
+
+        System.out.println("Оба игрока готовы к бою.");
+
+        //ведем бой пока счетчик одного из игроков не станет равным нулю
+        attacks(fieldFirstPlayer, fieldSecondPlayer);
+
+        //конец
+    }
+
+    private void print(char[][] arr) {
+        for (int row = 0; row < arr.length; row++) {
+            System.out.println(arr[row]);
+        }
+    }
+
     private PlayingField makeSheep(PlayingField field, char[][] shep, int vert, int hor) {
         for (int row = 0; row < shep.length; row++) {
             for (int col = 0; col < shep[0].length; col++) {
@@ -77,24 +100,4 @@ public class Game {
         }
         return field;
     }
-
-    public void game() {
-        PlayingField fieldFirstPlayer = new PlayingField();
-        PlayingField fieldSecondPlayer = new PlayingField();
-
-        // расставляем фигуры на оба поля
-        placementOfFigures(fieldFirstPlayer, fieldSecondPlayer);
-
-        //ведем бой пока счетчик одного из игроков не станет равным нулю
-
-
-        //конец
-    }
-
-    private void print(char[][] arr) {
-        for (int row = 0; row < arr.length; row++) {
-            System.out.println(arr[row]);
-        }
-    }
-
 }

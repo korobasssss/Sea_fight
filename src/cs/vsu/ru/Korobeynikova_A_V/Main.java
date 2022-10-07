@@ -10,8 +10,8 @@ public class Main {
         //вводим имена
         System.out.println("1 игрок, введите Ваше имя: ");
         String name1 = scanner.nextLine();
-        System.out.println("2 игрок, введите Ваше имя: ");
-        String name2 = scanner.nextLine();
+        //System.out.println("2 игрок, введите Ваше имя: ");
+        String name2 = "robot";
 
         Game game = new Game();
         game.game();
