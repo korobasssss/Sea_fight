@@ -50,25 +50,31 @@ public class Game {
     }
 
     private void attacks(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) {
-        int sheepCountPlayer1 = 7;
-        int sheepCountPlayer2 = 7;
+        int sheepCountPlayer1 = 10;
+        int sheepCountPlayer2 = 10;
+        PlayingField opponentOfTheFirstPlayer = new PlayingField(); opponentOfTheFirstPlayer.unknownField();
+        PlayingField opponentOfTheSecondPlayer = new PlayingField(); opponentOfTheSecondPlayer.unknownField();
         int who = 1;
-        while (sheepCountPlayer1 > 0 || sheepCountPlayer2 > 0) {
+
+        while (sheepCountPlayer1 > 0 && sheepCountPlayer2 > 0) {
             if (who == 1) {
-                moveOnTheOpponent(who, fieldSecondPlayer, sheepCountPlayer2);
+                sheepCountPlayer2 = moveOnTheOpponent(who, fieldSecondPlayer, sheepCountPlayer2, opponentOfTheSecondPlayer);
+                System.out.println("Поле 1 игрока: ");
+                print(fieldFirstPlayer.toArray());
                 who = 2;
             } else {
-                moveOnTheOpponent(who, fieldFirstPlayer, sheepCountPlayer1);
+                sheepCountPlayer1 = moveOnTheOpponent(who, fieldFirstPlayer, sheepCountPlayer1, opponentOfTheFirstPlayer);
                 who = 1;
             }
         }
         if (sheepCountPlayer1 == 0) System.out.println("Победил игрок 2");
         else if (sheepCountPlayer2 == 0) System.out.println("Победил игрок 1");
     }
-    private void moveOnTheOpponent(int who, PlayingField attacked, int sheepCount) {
+
+    private int moveOnTheOpponent(int who, PlayingField attacked, int sheepCount, PlayingField opponent) {
         char cell = ' ';
         int vertical; int horizontal;
-        while (cell != '0' && cell != '#') {
+        while (cell != '0') {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
             if (who == 1) {
@@ -94,17 +100,23 @@ public class Game {
                     sheepCount--;
                 }
                 attacked.setCellStatus(vertical, horizontal, '#');
+                opponent.setCellStatus(vertical, horizontal, '#');
             } else if (cell == '0') {
                 System.out.println("Мимо.");
                 attacked.setCellStatus(vertical, horizontal, '#');
+                opponent.setCellStatus(vertical, horizontal, '#');
             } else if (cell == '#') {
                 System.out.println("Эта зона уже поражена.");
             }
-            if (who == 2) print(attacked.toArray());
+            if (who == 1) {
+                System.out.println("Поле противника: ");
+                print(opponent.toArray());
+                System.out.println();
+            }
         }
-
-
+        return sheepCount;
     }
+
 
 
     public void game() {
