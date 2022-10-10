@@ -20,7 +20,7 @@ public class Game {
             System.out.println();
         } else {
             int sheepCount = 1;
-            int sheepCells = 4;
+            int sheepCells = 4; // кол-во типов кораблей
             Figure figure = new Figure();
             while (sheepCount <= 4) {
                 for (int sheep = 0; sheep < sheepCount; sheep++) {
@@ -31,13 +31,17 @@ public class Game {
                     int vertical = scanner.nextInt();
                     System.out.println("По горизонтали: ");
                     int horizontal = scanner.nextInt();
-
-                    switch (sheepCells) {
-                        case 1 : fieldFirstPlayer.setCellStatus(vertical - 1, horizontal - 1, '1'); break;
-                        case 2 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[2][2]), vertical - 1, horizontal - 1); break;
-                        case 3 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[3][3]), vertical - 1, horizontal - 1); break;
-                        case 4 : makeSheep(fieldFirstPlayer, figure.makeFigureTwoThreeFour(new char[4][4]), vertical - 1, horizontal - 1); break;
+                    while (!checkOnRightPos(fieldFirstPlayer, vertical - 1 , horizontal - 1, sheepCells, figure.pos)) {
+                        System.out.println("Корабль расположен близко к другим, мы не можем его тут поставить, выберите другое местоположение.");
+                        System.out.println("По вертикали: ");
+                        vertical = scanner.nextInt();
+                        System.out.println("По горизонтали: ");
+                        horizontal = scanner.nextInt();
                     }
+
+                    if (sheepCells == 1) fieldFirstPlayer.setCellStatus(vertical - 1, horizontal - 1, '1');
+                    else figure.makeSheep(fieldFirstPlayer, vertical - 1, horizontal - 1, sheepCells);
+
                     print(fieldFirstPlayer.toArray());
                     System.out.println();
                 }
@@ -50,6 +54,7 @@ public class Game {
     }
 
     private void attacks(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) {
+        print(fieldSecondPlayer.toArray());
         int sheepCountPlayer1 = 10;
         int sheepCountPlayer2 = 10;
         PlayingField opponentOfTheFirstPlayer = new PlayingField(); opponentOfTheFirstPlayer.unknownField();
@@ -59,16 +64,14 @@ public class Game {
         while (sheepCountPlayer1 > 0 && sheepCountPlayer2 > 0) {
             if (who == 1) {
                 sheepCountPlayer2 = moveOnTheOpponent(who, fieldSecondPlayer, sheepCountPlayer2, opponentOfTheSecondPlayer);
-                System.out.println("Поле 1 игрока: ");
-                print(fieldFirstPlayer.toArray());
                 who = 2;
             } else {
                 sheepCountPlayer1 = moveOnTheOpponent(who, fieldFirstPlayer, sheepCountPlayer1, opponentOfTheFirstPlayer);
                 who = 1;
             }
         }
-        if (sheepCountPlayer1 == 0) System.out.println("Победил игрок 2");
-        else if (sheepCountPlayer2 == 0) System.out.println("Победил игрок 1");
+        if (sheepCountPlayer1 < 0) System.out.println("Победил игрок 2");
+        else if (sheepCountPlayer2 < 0) System.out.println("Победил игрок 1");
     }
 
     private int moveOnTheOpponent(int who, PlayingField attacked, int sheepCount, PlayingField opponent) {
@@ -112,6 +115,9 @@ public class Game {
                 System.out.println("Поле противника: ");
                 print(opponent.toArray());
                 System.out.println();
+            } else {
+                System.out.println("Поле 1 игрока: ");
+                print(attacked.toArray());
             }
         }
         return sheepCount;
@@ -140,15 +146,6 @@ public class Game {
         }
     }
 
-    private PlayingField makeSheep(PlayingField field, char[][] shep, int vert, int hor) {
-        for (int row = 0; row < shep.length; row++) {
-            for (int col = 0; col < shep[0].length; col++) {
-                if (shep[row][col] == '1') field.setCellStatus(row + vert, col + hor, shep[row][col]);
-            }
-        }
-        return field;
-    }
-
     private PlayingField changeTheCells(PlayingField field, char[][] newField) {
         for (int row = 0; row < newField.length; row++) {
             for (int col = 0; col < newField[0].length; col++) {
@@ -156,5 +153,27 @@ public class Game {
             }
         }
         return field;
+    }
+
+    private boolean checkOnRightPos(PlayingField field, int vertical, int horizontal, int shipType, int pos) {
+        int rowFrom; int colFrom; int rowTo; int colTo;
+        if (vertical == 0) rowFrom = 0;
+        else rowFrom = vertical - 1;
+        if (horizontal == 0) colFrom = 0;
+        else colFrom = horizontal - 1;
+        if (vertical == field.length()) rowTo = field.length() - 1;
+        else if (pos == 0) {
+            rowTo = vertical + shipType;
+        } else rowTo = rowFrom + 3;
+        if (horizontal == field.length()) colTo = field.length() - 1;
+        else if (pos == 0) {
+            colTo = colFrom + 3;
+        } else colTo = horizontal + shipType;
+        for (int r = rowFrom; r < rowTo; r++) {
+            for (int c = colFrom; c < colTo; c++) {
+                if (field.getCellStatus(r, c) == '1') return false;
+            }
+        }
+        return true;
     }
 }

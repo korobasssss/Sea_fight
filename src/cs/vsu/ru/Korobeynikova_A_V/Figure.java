@@ -1,5 +1,7 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
+import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -12,26 +14,46 @@ public class Figure {
 //    public final char[][] threeCell = makeFigureTwoThreeFour(new char[3][3]); // трехклеточный корабль
 //    public final char[][] fourCell = makeFigureTwoThreeFour(new char[4][4]); // четырехклеточных корабль
 
-    private char[] makeFigureOne(char[] arr) {
-        arr[0] = 1;
-        return arr;
+//    private char[] makeFigureOne(char[] arr) {
+//        arr[0] = 1;
+//        return arr;
+//    }
+//
+//    public char[][] makeFigureTwoThreeFour(char[][] arr) {
+//        for (int r = 0; r < arr.length; r++) {
+//            for (int c = 0; c < arr[0].length; c++) {
+//                if (pos == 0) {
+//                    if (c == 0) arr[r][c] = '1';
+//                    else arr[r][c] = '0';
+//                }
+//                else if (pos == 1) {
+//                    if (r == 0) arr[r][c] = '1';
+//                    else arr[r][c] = '0';
+//                }
+//
+//            }
+//        }
+//        return arr;
+//    }
+
+    public PlayingField makeSheep(PlayingField field, int vert, int hor, int shepType) {
+        if (pos == 0) makeVerticalShep(field, vert, hor, shepType);
+        else makeHorizontalShep(field, vert, hor, shepType);
+        return field;
     }
 
-    public char[][] makeFigureTwoThreeFour(char[][] arr) {
-        for (int r = 0; r < arr.length; r++) {
-            for (int c = 0; c < arr[0].length; c++) {
-                if (pos == 0) {
-                    if (c == 0) arr[r][c] = '1';
-                    else arr[r][c] = '0';
-                }
-                else if (pos == 1) {
-                    if (r == 0) arr[r][c] = '1';
-                    else arr[r][c] = '0';
-                }
-
-            }
+    private PlayingField makeVerticalShep(PlayingField field, int vert, int hor, int shepType) {
+        for (int row = vert; row < vert + shepType; row++) {
+            field.setCellStatus(row, hor, '1');
         }
-        return arr;
+        return field;
+    }
+
+    private PlayingField makeHorizontalShep(PlayingField field, int vert, int hor, int shepType) {
+        for (int col = hor; col < shepType + hor; col++) {
+            field.setCellStatus(vert, col, '1');
+        }
+        return field;
     }
 
 //    public char[][] placementOfFigures(char field[][]) {
