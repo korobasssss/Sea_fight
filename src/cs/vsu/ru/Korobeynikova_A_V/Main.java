@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println("Добро пожаловать в игру Морской бой. Хорошей вам игры!!!");
 //        //вводим имена
 //        System.out.println("1 игрок, введите Ваше имя: ");
 //        String name1 = scanner.nextLine();

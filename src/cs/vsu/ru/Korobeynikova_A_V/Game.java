@@ -27,16 +27,16 @@ public class Game {
                     System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", sheepCells);
                     figure.pos = scanner.nextInt();
                     System.out.printf("Выберите местоположение %d клеточного корабля: ", sheepCells);
+                    System.out.println("По горизонтали: ");
+                    int horizontal = changeToInt(scanner.nextLine());
                     System.out.println("По вертикали: ");
                     int vertical = scanner.nextInt();
-                    System.out.println("По горизонтали: ");
-                    int horizontal = scanner.nextInt();
                     while (!checkOnRightPos(fieldFirstPlayer, vertical - 1 , horizontal - 1, sheepCells, figure.pos)) {
                         System.out.println("Корабль расположен близко к другим, мы не можем его тут поставить, выберите другое местоположение.");
+                        System.out.println("По горизонтали: ");
+                        horizontal = changeToInt(scanner.nextLine());
                         System.out.println("По вертикали: ");
                         vertical = scanner.nextInt();
-                        System.out.println("По горизонтали: ");
-                        horizontal = scanner.nextInt();
                     }
 
                     if (sheepCells == 1) fieldFirstPlayer.setCellStatus(vertical - 1, horizontal - 1, '1');
@@ -81,20 +81,20 @@ public class Game {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
             if (who == 1) {
-                System.out.println("По вертикали: ");
-                vertical = scanner.nextInt() - 1;
                 System.out.println("По горизонтали: ");
-                horizontal = scanner.nextInt() - 1;
+                horizontal = changeToInt(scanner.nextLine());
+                System.out.println("По вертикали: ");
+                vertical = scanner.nextInt();
             } else {
                 vertical = random.nextInt(10);
                 horizontal = random.nextInt(10);
             }
 
-            System.out.printf("Игрок %d походил по вертикали на %d и по горизонтали на %d.", who, vertical + 1, horizontal + 1);
+            System.out.printf("Игрок %d походил по вертикали на %d и по горизонтали на %d.", who, vertical, horizontal);
             System.out.println();
-            cell = attacked.getCellStatus(vertical, horizontal);
+            cell = attacked.getCellStatus(vertical - 1, horizontal - 1);
             if (cell == '1') {
-                if (attacked.checkShepFor9Cells(vertical, horizontal)) {
+                if (attacked.checkShepFor9Cells(vertical - 1, horizontal - 1)) {
                     System.out.printf("Игрок %d ранил корабль другого игрока", who);
                     System.out.println();
                 } else {
@@ -102,12 +102,12 @@ public class Game {
                     System.out.println();
                     sheepCount--;
                 }
-                attacked.setCellStatus(vertical, horizontal, '#');
-                opponent.setCellStatus(vertical, horizontal, '#');
+                attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
+                opponent.setCellStatus(vertical - 1, horizontal - 1, '#');
             } else if (cell == '0') {
                 System.out.println("Мимо.");
-                attacked.setCellStatus(vertical, horizontal, '#');
-                opponent.setCellStatus(vertical, horizontal, '#');
+                attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
+                opponent.setCellStatus(vertical - 1, horizontal - 1, '#');
             } else if (cell == '#') {
                 System.out.println("Эта зона уже поражена.");
             }
@@ -175,5 +175,22 @@ public class Game {
             }
         }
         return true;
+    }
+
+    private int changeToInt(String symbol) { //меняем букву на число
+        int num = 0;
+        switch (symbol) {
+            case "A": num = 1;
+            case "B": num = 2;
+            case "C": num = 3;
+            case "D": num = 4;
+            case "E": num = 5;
+            case "F": num = 6;
+            case "G": num = 7;
+            case "H": num = 8;
+            case "I": num = 9;
+            case "J": num = 10;
+        }
+        return num;
     }
 }
