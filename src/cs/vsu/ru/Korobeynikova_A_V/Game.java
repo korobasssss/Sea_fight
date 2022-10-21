@@ -7,10 +7,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
-    Scanner scanner = new Scanner(System.in);
+    //Scanner scanner = new Scanner(System.in);
     Random random = new Random();
 
     private void placementOfFigures(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) { //расставляем фигуры на обоих полях
+        Scanner scanner = new Scanner(System.in);
         //расставляем фигуры на поле для 1 игрока
         System.out.println("Игрок 1 , Вы хотите случаную расстановку(0) или желаете самостоятельно расставить корабли(1)? ");
         int decision = scanner.nextInt();
@@ -19,18 +20,20 @@ public class Game {
             print(fieldFirstPlayer.toArray());
             System.out.println();
         } else {
-            int sheepCount = 1;
             int sheepCells = 4; // кол-во типов кораблей
             Figure figure = new Figure();
-            while (sheepCount <= 4) {
-                for (int sheep = 0; sheep < sheepCount; sheep++) {
+            while (sheepCells > 0) {
+                for (int sheep = sheepCells; sheep > 0; sheep--) {
                     System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", sheepCells);
                     figure.pos = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.printf("Выберите местоположение %d клеточного корабля: ", sheepCells);
+                    System.out.println();
                     System.out.println("По горизонтали: ");
                     int horizontal = changeToInt(scanner.nextLine());
                     System.out.println("По вертикали: ");
                     int vertical = scanner.nextInt();
+                    scanner.nextLine();
                     while (!checkOnRightPos(fieldFirstPlayer, vertical - 1 , horizontal - 1, sheepCells, figure.pos)) {
                         System.out.println("Корабль расположен близко к другим, мы не можем его тут поставить, выберите другое местоположение.");
                         System.out.println("По горизонтали: ");
@@ -46,7 +49,7 @@ public class Game {
                     System.out.println();
                 }
                 sheepCells -= 1;
-                sheepCount += 1;
+
             }
         }
         // для робота
@@ -54,12 +57,12 @@ public class Game {
     }
 
     private void attacks(PlayingField fieldFirstPlayer, PlayingField fieldSecondPlayer) {
-        print(fieldSecondPlayer.toArray());
+        //print(fieldSecondPlayer.toArray());
         int sheepCountPlayer1 = 10;
         int sheepCountPlayer2 = 10;
         PlayingField opponentOfTheFirstPlayer = new PlayingField(); opponentOfTheFirstPlayer.unknownField();
         PlayingField opponentOfTheSecondPlayer = new PlayingField(); opponentOfTheSecondPlayer.unknownField();
-        int who = 1;
+        int who = 1; // 1 - 1 игрок, 2 - робот
 
         while (sheepCountPlayer1 > 0 && sheepCountPlayer2 > 0) {
             if (who == 1) {
@@ -75,8 +78,10 @@ public class Game {
     }
 
     private int moveOnTheOpponent(int who, PlayingField attacked, int sheepCount, PlayingField opponent) {
+        Scanner scanner = new Scanner(System.in);
         char cell = ' ';
         int vertical; int horizontal;
+
         while (cell != '0') {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
@@ -92,25 +97,26 @@ public class Game {
 
             System.out.printf("Игрок %d походил по вертикали на %d и по горизонтали на %d.", who, vertical, horizontal);
             System.out.println();
-            cell = attacked.getCellStatus(vertical - 1, horizontal - 1);
-            if (cell == '1') {
-                if (attacked.checkShepFor9Cells(vertical - 1, horizontal - 1)) {
-                    System.out.printf("Игрок %d ранил корабль другого игрока", who);
-                    System.out.println();
-                } else {
-                    System.out.printf("Игрок %d убил корабль другого игрока", who);
-                    System.out.println();
-                    sheepCount--;
-                }
-                attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
-                opponent.setCellStatus(vertical - 1, horizontal - 1, '#');
-            } else if (cell == '0') {
-                System.out.println("Мимо.");
-                attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
-                opponent.setCellStatus(vertical - 1, horizontal - 1, '#');
-            } else if (cell == '#') {
-                System.out.println("Эта зона уже поражена.");
+            switch (cell = attacked.getCellStatus(vertical - 1, horizontal - 1)) {
+                case '1' :
+                    if (attacked.checkShepFor9Cells(vertical - 1, horizontal - 1)) {
+                        System.out.printf("Игрок %d ранил корабль другого игрока", who);
+                        System.out.println();
+                    } else {
+                        System.out.printf("Игрок %d убил корабль другого игрока", who);
+                        System.out.println();
+                        sheepCount--;
+                    }
+                    attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
+                    opponent.setCellStatus(vertical - 1, horizontal - 1, '#'); break;
+                case '0' :
+                    System.out.println("Мимо.");
+                    attacked.setCellStatus(vertical - 1, horizontal - 1, '#');
+                    opponent.setCellStatus(vertical - 1, horizontal - 1, '#'); break;
+                case '#' :
+                    System.out.println("Эта зона уже поражена."); break;
             }
+
             if (who == 1) {
                 System.out.println("Поле противника: ");
                 print(opponent.toArray());
@@ -124,7 +130,6 @@ public class Game {
     }
 
 
-
     public void game() {
         PlayingField fieldFirstPlayer = new PlayingField();
         PlayingField fieldSecondPlayer = new PlayingField();
@@ -134,7 +139,7 @@ public class Game {
 
         System.out.println("Оба игрока готовы к бою.");
 
-        //ведем бой пока счетчик одного из игроков не станет равным нулю
+        //ведем бой пока счетчик кол-ва кораблей одного из игроков не станет равным нулю
         attacks(fieldFirstPlayer, fieldSecondPlayer);
 
         //конец
@@ -146,13 +151,12 @@ public class Game {
         }
     }
 
-    private PlayingField changeTheCells(PlayingField field, char[][] newField) {
+    private void changeTheCells(PlayingField field, char[][] newField) {
         for (int row = 0; row < newField.length; row++) {
             for (int col = 0; col < newField[0].length; col++) {
                 field.setCellStatus(row, col, newField[row][col]);
             }
         }
-        return field;
     }
 
     private boolean checkOnRightPos(PlayingField field, int vertical, int horizontal, int shipType, int pos) {
@@ -178,19 +182,9 @@ public class Game {
     }
 
     private int changeToInt(String symbol) { //меняем букву на число
-        int num = 0;
-        switch (symbol) {
-            case "A": num = 1;
-            case "B": num = 2;
-            case "C": num = 3;
-            case "D": num = 4;
-            case "E": num = 5;
-            case "F": num = 6;
-            case "G": num = 7;
-            case "H": num = 8;
-            case "I": num = 9;
-            case "J": num = 10;
+        if (symbol.length() == 1) {
+            return symbol.charAt(0) - 65 + 1;
         }
-        return num;
+        return -1;
     }
 }
