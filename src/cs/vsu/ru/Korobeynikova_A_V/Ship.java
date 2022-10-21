@@ -1,17 +1,10 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
-import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-//создать фигуры, брать потом отсюда их
 public class Ship {
 
-    public int[] startingPosition;
-    public int shipType;
-    public int orientation;
+    int[] startingPosition;
+    int shipType;
+    int orientation;
 
     public Ship(int[] startingPosition, int shipType, int orientation) {
         this.startingPosition = startingPosition;
@@ -19,6 +12,27 @@ public class Ship {
         this.orientation = orientation;
     }
 
-    //List<int[]> ship = new ArrayList<>(); // лист массивов для каждого корабля, масиив ключает начальную точку, длину, вертикальный/горизонтальный(0/1)
+    public int[] getStartingPosition() {
+        return startingPosition;
+    }
 
+    public void setStartingPosition(int[] startingPosition) {
+        this.startingPosition = startingPosition;
+    }
+
+    public int getShipType() {
+        return shipType;
+    }
+
+    public void setShipType(int shipType) {
+        this.shipType = shipType;
+    }
+
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
 }

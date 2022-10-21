@@ -64,13 +64,13 @@ public class RandomPlacements {
 
     public static char[][] getRandomField() {
         int rnd = random.nextInt(5);
-        switch (rnd) {
-            case 0: return randomField1;
-            case 1: return randomField2;
-            case 2: return randomField3;
-            case 3: return randomField4;
-            case 4: return randomField5;
-        }
-        return new char[2][2];
+        return switch (rnd) {
+            case 0 -> randomField1;
+            case 1 -> randomField2;
+            case 2 -> randomField3;
+            case 3 -> randomField4;
+            case 4 -> randomField5;
+            default -> new char[2][2];
+        };
     }
 }
