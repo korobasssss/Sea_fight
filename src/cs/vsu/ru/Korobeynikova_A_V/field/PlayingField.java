@@ -3,12 +3,19 @@ package cs.vsu.ru.Korobeynikova_A_V.field;
 import java.util.Arrays;
 
 public class PlayingField {
-    int size = 10;
+    public static int size = 10;
     char[][] field = fillCell(new char[size][size]);
 
+    public enum Status {
+        SHIP,
+        MARKED,
+        EMPTY,
+        UNKNOWN
+    }
+
     private char[][] fillCell(char[][] fieldFill) {
-        for (int row = 0; row < fieldFill.length; row++) {
-            Arrays.fill(fieldFill[row], '0');
+        for (char[] chars : fieldFill) {
+            Arrays.fill(chars, '0');
         }
         return fieldFill;
     }
@@ -19,16 +26,28 @@ public class PlayingField {
         }
     }
 
-    public void addRndField(char[][] newField) {
-        field = newField;
+    public Status getCellStatus(int row, int col) { // не забыть переносить уже col - 1
+        return enumStatus(row, col);
     }
 
-    public char getCellStatus(int row, int col) { // не забыть переносить уже col - 1
-        return field[row][col];
+    private Status enumStatus(int row, int col) {
+        if (field[row][col] == '0') return Status.EMPTY;
+        if (field[row][col] == '1') return Status.SHIP;
+        if (field[row][col] == '#') return Status.MARKED;
+
+        return Status.EMPTY;
     }
 
-    public void setCellStatus(int row, int col, char status) {
-        field[row][col] = status;
+    public void setCellStatus(int row, int col, Status status) {
+        field[row][col] = charStatus(status);
+    }
+
+    private char charStatus(Status status) {
+        if (status == Status.EMPTY) return '0';
+        if (status == Status.SHIP) return '1';
+        if (status == Status.MARKED) return '#';
+
+        return '0';
     }
 
     public int length() {

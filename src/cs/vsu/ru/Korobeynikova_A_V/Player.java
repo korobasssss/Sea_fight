@@ -10,41 +10,42 @@ public class Player {
     List<Ship> ships;
     int countShips;
 
-    public Player(PlayingField field, PlayingField opponentsField, int countShips) {
+    public Player(PlayingField field, List<Ship> ships, PlayingField opponentsField, int countShips) {
         opponentsField.unknownField();
 
         this.field = field;
+        this.ships = ships;
         this.opponentsField = opponentsField;
         this.countShips = countShips;
     }
 
     public void makeSheep(Ship ship) {
-        if (ship.getOrientation() == 0) makeVerticalShip(ship);
+        if (ship.getOrientation() == Ship.Orientation.VERTICAL) makeVerticalShip(ship);
         else makeHorizontalShip(ship);
     }
 
     private void makeVerticalShip(Ship ship) {
-        for (int row = ship.getStartingPosition()[0]; row < ship.getStartingPosition()[1] + ship.getShipType(); row++) {
-            field.setCellStatus(ship.getStartingPosition()[0], ship.getStartingPosition()[1], '1');
+        for (int row = ship.getStartingPosition()[0]; row < ship.getStartingPosition()[0] + ship.getShipType(); row++) {
+            field.setCellStatus(row, ship.getStartingPosition()[1], PlayingField.Status.SHIP);
         }
     }
 
     private void makeHorizontalShip(Ship ship) {
-        for (int col = ship.getStartingPosition()[1]; col < ship.getStartingPosition()[0] + ship.getShipType(); col++) {
-            field.setCellStatus(ship.getStartingPosition()[0], ship.getStartingPosition()[1], '1');
+        for (int col = ship.getStartingPosition()[1]; col < ship.getStartingPosition()[1] + ship.getShipType(); col++) {
+            field.setCellStatus(ship.getStartingPosition()[0], col, PlayingField.Status.SHIP);
         }
     }
 
 
     public boolean hurtOrKill(Ship ship) {
-        if (ship.getShipType() == 0) {
+        if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
             for (int row = ship.getStartingPosition()[0]; row <= ship.getStartingPosition()[0] + ship.getShipType(); row++) {
-                if (field.getCellStatus(row, ship.getStartingPosition()[1]) == '1') return false; //ранил
+                if (field.getCellStatus(row, ship.getStartingPosition()[1]) == PlayingField.Status.SHIP) return false; //ранил
             }
             return true; //убил
-        } else if (ship.getShipType() == 1) {
+        } else if (ship.getOrientation() == Ship.Orientation.HORIZONTAL) {
             for (int col = ship.getStartingPosition()[1]; col <= ship.getStartingPosition()[1] + ship.getShipType(); col++) {
-                if (field.getCellStatus(ship.getStartingPosition()[0], col) == '1') return false; //ранил
+                if (field.getCellStatus(ship.getStartingPosition()[0], col) == PlayingField.Status.SHIP) return false; //ранил
             }
             return true; //убил
         }
@@ -52,22 +53,26 @@ public class Player {
     }
 
     public Ship findShip(int row, int col) {
-        for (int i = 0; i < ships.size(); i++) {
-            if (ships.get(i).getShipType() == 0) {
-                for(int r = ships.get(i).getStartingPosition()[0]; r <= ships.get(i).getStartingPosition()[0] + ships.get(i).getShipType(); r++) {
-                    if (r == row && col == ships.get(i).getStartingPosition()[1]) return ships.get(i);
+        for (Ship ship : ships) {
+            if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
+                for (int r = ship.getStartingPosition()[0]; r <= ship.getStartingPosition()[0] + ship.getShipType(); r++) {
+                    if (r == row && col == ship.getStartingPosition()[1]) {
+                        return ship;
+                    }
                 }
             } else {
-                for(int c = ships.get(i).getStartingPosition()[1]; c <= ships.get(i).getStartingPosition()[1] + ships.get(i).getShipType(); c++) {
-                    if (c == col && row == ships.get(i).getStartingPosition()[0]) return ships.get(i);
+                for (int c = ship.getStartingPosition()[1]; c <= ship.getStartingPosition()[1] + ship.getShipType(); c++) {
+                    if (c == col && row == ship.getStartingPosition()[0]) {
+                        return ship;
+                    }
                 }
             }
         }
-        return new Ship(new int[] {0, 0}, 0, 0);
+        return new Ship(new int[] {0, 0}, 0, Ship.Orientation.VERTICAL);
     }
 
     public boolean canMakeShipOrNot(Ship ship) {
-        if (ship.getOrientation() == 0) return canVerticalMakeShipOrNot(ship);
+        if (ship.getOrientation() == Ship.Orientation.VERTICAL) return canVerticalMakeShipOrNot(ship);
         else return canMakeHorizontalShipOrNot(ship);
     }
 
@@ -79,7 +84,7 @@ public class Player {
                 int col = ship.getStartingPosition()[1] - 1;
                 while (col <= ship.getStartingPosition()[1] + 1) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == '1') return false;
+                        if (field.getCellStatus(row, col) == PlayingField.Status.SHIP) return false;
                     }
                     col++;
                 }
@@ -97,7 +102,7 @@ public class Player {
                 int col = ship.getStartingPosition()[1] - 1;
                 while (col <= ship.getStartingPosition()[1] + ship.getShipType()) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == '1') return false;
+                        if (field.getCellStatus(row, col) == PlayingField.Status.SHIP) return false;
                     }
                     col++;
                 }
@@ -106,8 +111,6 @@ public class Player {
         }
         return true;
     }
-
-
 
     public PlayingField getField() {
         return field;
@@ -123,8 +126,15 @@ public class Player {
         return ships;
     }
 
+    public void setShips(Ship ships) {
+        this.ships.add(ships);
+    }
+
     public void setShips(List<Ship> ships) {
         this.ships = ships;
+        for (Ship ship : ships) {
+            makeSheep(ship);
+        }
     }
 
     public int getCountShips() {

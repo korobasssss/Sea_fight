@@ -1,6 +1,5 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
-import java.util.Scanner;
 
 public class Main {
 

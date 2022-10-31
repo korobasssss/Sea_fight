@@ -4,9 +4,14 @@ public class Ship {
 
     int[] startingPosition;
     int shipType;
-    int orientation;
+    Orientation orientation;// todo сделать енумы
 
-    public Ship(int[] startingPosition, int shipType, int orientation) {
+    public enum Orientation {
+        VERTICAL,
+        HORIZONTAL
+    }
+
+    public Ship(int[] startingPosition, int shipType, Orientation orientation) {
         this.startingPosition = startingPosition;
         this.shipType = shipType;
         this.orientation = orientation;
@@ -28,11 +33,11 @@ public class Ship {
         this.shipType = shipType;
     }
 
-    public int getOrientation() {
+    public Orientation getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(int orientation) {
+    public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
     }
 }

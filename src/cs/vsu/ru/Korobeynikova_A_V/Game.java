@@ -2,6 +2,8 @@ package cs.vsu.ru.Korobeynikova_A_V;
 
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 
+import java.util.ArrayList;
+
 public class Game {
 
     private void attacks(Player player1, Player player2, Console console) {
@@ -9,23 +11,23 @@ public class Game {
 
         while (player1.getCountShips() > 0 && player2.getCountShips() > 0) {
             if (who == 1) {
-                console.moveOnTheOpponent(who, player2, player2.getField(), player2.getCountShips(), player1.getOpponentsField());
+                console.moveOnTheOpponent(who, player1, player2, player2.getField(), player2.getCountShips(), player1.getOpponentsField());
                 who = 2;
             } else {
-                console.moveOnTheOpponent(who, player1, player1.getField(), player1.getCountShips(), player2.getOpponentsField());
+                console.moveOnTheOpponent(who, player2, player1, player1.getField(), player1.getCountShips(), player2.getOpponentsField());
                 who = 1;
             }
         }
     }
     public void game() {
-        Player player1 = new Player(new PlayingField(), new PlayingField(), 10);
-        Player player2 = new Player(new PlayingField(), new PlayingField(), 10);
+        Player player1 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), 10);
+        Player player2 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), 10);
 
         Console console = new Console();
 
         // расставляем фигуры на оба поля
-        player1.setField(console.placementOfFigures(1, player1));
-        player2.setField(console.placementOfFigures(2, player2));
+        console.placementOfFigures(1, player1);
+        console.placementOfFigures(2, player2);
 
         System.out.println("Оба игрока готовы к бою.");
 
