@@ -1,8 +1,10 @@
 package cs.vsu.ru.Korobeynikova_A_V.Figure;
 
+import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
+
 public class Ship {
 
-    int[] startingPosition;
+    Coordinate startingPosition;
     int shipType;
     Orientation orientation;
 
@@ -11,17 +13,17 @@ public class Ship {
         HORIZONTAL
     }
 
-    public Ship(int[] startingPosition, int shipType, Orientation orientation) {
+    public Ship(Coordinate startingPosition, int shipType, Orientation orientation) {
         this.startingPosition = startingPosition;
         this.shipType = shipType;
         this.orientation = orientation;
     }
 
-    public int[] getStartingPosition() {
+    public Coordinate getStartingPosition() {
         return startingPosition;
     }
 
-    public void setStartingPosition(int[] startingPosition) {
+    public void setStartingPosition(Coordinate startingPosition) {
         this.startingPosition = startingPosition;
     }
 

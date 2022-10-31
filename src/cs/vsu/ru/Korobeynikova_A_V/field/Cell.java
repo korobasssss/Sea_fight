@@ -1,4 +1,4 @@
-package cs.vsu.ru.Korobeynikova_A_V;
+package cs.vsu.ru.Korobeynikova_A_V.field;
 
 public class Cell {
     public char visual;

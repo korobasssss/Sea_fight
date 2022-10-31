@@ -1,8 +1,10 @@
 package cs.vsu.ru.Korobeynikova_A_V.Figure;
 
 
+import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
+
 public class Mine {
-    int[] position;
+    Coordinate position;
     Status status;
 
     public enum Status {
@@ -10,17 +12,17 @@ public class Mine {
         NOT_ACTIVATED
     }
 
-    public Mine(int[] position, Status status) {
+    public Mine(Coordinate position, Status status) {
         super();
         this.position = position;
         this.status = status;
     }
 
-    public int[] getPosition() {
+    public Coordinate getPosition() {
         return position;
     }
 
-    public void setPosition(int[] position) {
+    public void setPosition(Coordinate position) {
         this.position = position;
     }
 

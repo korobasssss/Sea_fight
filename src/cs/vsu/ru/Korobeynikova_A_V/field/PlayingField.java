@@ -1,7 +1,5 @@
 package cs.vsu.ru.Korobeynikova_A_V.field;
 
-import cs.vsu.ru.Korobeynikova_A_V.Cell;
-
 public class PlayingField {
     public static int size = 10;
     Cell[][] field = fillCell(new Cell[size][size]);

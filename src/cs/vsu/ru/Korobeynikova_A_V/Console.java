@@ -2,6 +2,8 @@ package cs.vsu.ru.Korobeynikova_A_V;
 
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
+import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
+import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
 
@@ -10,7 +12,7 @@ import java.util.Scanner;
 public class Console{
     Scanner scanner = new Scanner(System.in);
 
-    private int[] getCoordinates() {
+    private Coordinate getCoordinates() {
         System.out.println("Выберите координату :");
         System.out.println("По горизонтали: ");
         scanner.nextLine();
@@ -27,7 +29,7 @@ public class Console{
         }
         System.out.println();
 
-        return new int[] {row - 1, col - 1};
+        return new Coordinate(row - 1, col - 1);
     }
 
     public void placementOfFigures(int who, Player player) {
@@ -54,12 +56,12 @@ public class Console{
             System.out.println("Введите координаты минного поля: ");
             Mine mine = new Mine(getCoordinates(), Mine.Status.NOT_ACTIVATED);
             player.setMines(mine);
-            while (player.getField().getCellStatus(mine.getPosition()[0], mine.getPosition()[1]) == Cell.Status.SHIP) {
+            while (player.getField().getCellStatus(mine.getPosition().getVertical(), mine.getPosition().getHorizontal()) == Cell.Status.SHIP) {
                 System.out.println("Вы не можете поставить сюда корабль! Введите координаты заново. ");
                 mine.setPosition(getCoordinates());
                 player.setMines(mine);
             }
-            player.getField().setCellStatus(mine.getPosition()[0], mine.getPosition()[1], Cell.Status.MINE);
+            player.getField().setCellStatus(mine.getPosition().getVertical(), mine.getPosition().getHorizontal(), Cell.Status.MINE);
             print(player.getField().getField());
         }
     }
@@ -68,8 +70,8 @@ public class Console{
         int shipCells = 4; // кол-во типов кораблей
         int shipCellsCount = 1;
         while (shipCells > 0) {
-            Ship ship = new Ship(new int[2], 0,Ship.Orientation.VERTICAL);
             for (int ships = shipCellsCount; ships > 0; ships--) {
+                Ship ship = new Ship(new Coordinate(0, 0), 0,Ship.Orientation.VERTICAL);
                 ship.setShipType(shipCells);
                 System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", shipCells);
                 int orientation = scanner.nextInt();
@@ -84,12 +86,12 @@ public class Console{
                 System.out.println();
                 ship.setStartingPosition(getCoordinates());
                 if (ship.getOrientation() == Ship.Orientation.VERTICAL){
-                    while ((ship.getStartingPosition()[0] + ship.getShipType()) - 1 >= PlayingField.size) {
+                    while ((ship.getStartingPosition().getVertical() + ship.getShipType()) - 1 >= PlayingField.size) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
                 } else {
-                    while ((ship.getStartingPosition()[1] + ship.getShipType()) - 1 > PlayingField.size) {
+                    while ((ship.getStartingPosition().getHorizontal() + ship.getShipType()) - 1 > PlayingField.size) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
@@ -111,7 +113,7 @@ public class Console{
     public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, PlayingField opponent) {
         Cell.Status cellStatus = Cell.Status.UNKNOWN;
 
-        int[] point;
+        Coordinate point;
         while (cellStatus != Cell.Status.EMPTY && cellStatus != Cell.Status.MINE) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
@@ -122,15 +124,15 @@ public class Console{
                 else point = getCoordinates();
             } else point = getCoordinates();
 
-            System.out.printf("Игрок %d походил по горизонтали на %d и по вертикали на %d.", who, point[1] + 1, point[0] + 1);
+            System.out.printf("Игрок %d походил по горизонтали на %d и по вертикали на %d.", who, point.getHorizontal() + 1, point.getVertical() + 1);
             System.out.println();
 
-            switch (cellStatus = attacked.getCellStatus(point[0], point[1])) {
+            switch (cellStatus = attacked.getCellStatus(point.getVertical(), point.getHorizontal())) {
                 case SHIP -> {
-                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
-                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
 
-                    if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(point[0], point[1]))) {
+                    if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(point.getVertical(), point.getHorizontal()))) {
                         System.out.printf("Игрок %d ранил корабль другого игрока", who);
                         System.out.println();
                     } else {
@@ -141,17 +143,17 @@ public class Console{
                 }
                 case EMPTY -> {
                     System.out.println("Мимо.");
-                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
-                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
                 }
                 case MARKED -> System.out.println("Эта зона уже поражена.");
                 case MINE -> {
-                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
-                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
 
                     System.out.println("Вы попали на мину ! :( Введите координаты клетки одного из своих кораблей! ");
-                    int[] coord = getCoordinates();
-                    while (player.getField().getCellStatus(coord[0], coord[1]) != Cell.Status.SHIP) {
+                    Coordinate coord = getCoordinates();
+                    while (player.getField().getCellStatus(coord.getVertical(), coord.getHorizontal()) != Cell.Status.SHIP) {
                         System.out.println("Не обманывайте, там у вас нет корабля, введите координаты заново! ");
                         coord = getCoordinates();
                     }
@@ -174,9 +176,9 @@ public class Console{
 
     private void print(Cell[][] arr) {
         System.out.println();
-        for (int row = 0; row < arr.length; row++) {
+        for (Cell[] cells : arr) {
             for (int col = 0; col < arr.length; col++) {
-                System.out.print(arr[row][col].visual);
+                System.out.print(cells[col].visual);
             }
             System.out.println();
         }
