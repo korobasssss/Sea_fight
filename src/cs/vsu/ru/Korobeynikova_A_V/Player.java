@@ -1,23 +1,33 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Player {
     PlayingField field;
     PlayingField opponentsField;
     List<Ship> ships;
+    List<Mine> mines;
+    Stack<int[]> opponentShipCells;
     int countShips;
+    int countMines;
 
-    public Player(PlayingField field, List<Ship> ships, PlayingField opponentsField, int countShips) {
+
+    public Player(PlayingField field, List<Ship> ships, List<Mine> mines, PlayingField opponentsField, int countShips, int countMines) {
         opponentsField.unknownField();
 
         this.field = field;
         this.ships = ships;
+        this.mines = mines;
         this.opponentsField = opponentsField;
         this.countShips = countShips;
+        this.countMines = countMines;
+        this.opponentShipCells = new Stack<>();
     }
 
     public void makeSheep(Ship ship) {
@@ -136,6 +146,42 @@ public class Player {
         for (Ship ship : ships) {
             makeSheep(ship);
         }
+    }
+
+    public int[] getOpponentShipCell() {
+        return opponentShipCells.pop();
+    }
+
+    public Stack<int[]> getOpponentShipCells() {
+        return opponentShipCells;
+    }
+
+    public void setOpponentShipCells(int[] coord) {
+        opponentShipCells.push(coord);
+    }
+
+    public List<Mine> getMines() {
+        return mines;
+    }
+
+    public void setMines(List<Mine> mines) {
+        this.mines = mines;
+    }
+
+    public void setMines(Mine mines) {
+        this.mines.add(mines);
+    }
+
+    public void setCountShips(int countShips) {
+        this.countShips = countShips;
+    }
+
+    public int getCountMines() {
+        return countMines;
+    }
+
+    public void setCountMines(int countMines) {
+        this.countMines = countMines;
     }
 
     public int getCountShips() {

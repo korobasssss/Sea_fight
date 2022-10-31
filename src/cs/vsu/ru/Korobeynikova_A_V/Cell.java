@@ -8,7 +8,8 @@ public class Cell {
         SHIP,
         MARKED,
         EMPTY,
-        UNKNOWN
+        UNKNOWN,
+        MINE
     }
 
     public Cell(Status status) {
@@ -29,6 +30,7 @@ public class Cell {
         if (status == Status.EMPTY) return '0';
         if (status == Status.MARKED) return  '#';
         if (status == Status.UNKNOWN) return  '?';
+        if (status == Status.MINE) return  '△';
 
         return ' ';
     }

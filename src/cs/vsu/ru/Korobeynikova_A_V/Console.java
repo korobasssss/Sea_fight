@@ -1,5 +1,6 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
@@ -40,12 +41,30 @@ public class Console{
         if (decision == 0) {
             System.out.println("Случайная расстановка кораблей: ");
             player.setShips(RandomPlacements.getRandomField());
-        } else makeField(player);
+            print(player.getField().getField());
 
-        print(player.getField().getField());
+        } else {
+            makeShips(player);
+        }
+        makeMines(player);
     }
 
-    private void makeField(Player player) {
+    private void makeMines(Player player) {
+        for (int i = 0; i < player.countMines; i++) {
+            System.out.println("Введите координаты минного поля: ");
+            Mine mine = new Mine(getCoordinates(), Mine.Status.NOT_ACTIVATED);
+            player.setMines(mine);
+            while (player.getField().getCellStatus(mine.getPosition()[0], mine.getPosition()[1]) == Cell.Status.SHIP) {
+                System.out.println("Вы не можете поставить сюда корабль! Введите координаты заново. ");
+                mine.setPosition(getCoordinates());
+                player.setMines(mine);
+            }
+            player.getField().setCellStatus(mine.getPosition()[0], mine.getPosition()[1], Cell.Status.MINE);
+            print(player.getField().getField());
+        }
+    }
+
+    private void makeShips(Player player) {
         int shipCells = 4; // кол-во типов кораблей
         int shipCellsCount = 1;
         while (shipCells > 0) {
@@ -89,18 +108,24 @@ public class Console{
         }
     }
 
-    public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, int sheepCount, PlayingField opponent) {
-        Cell.Status cell = Cell.Status.UNKNOWN;
+    public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, PlayingField opponent) {
+        Cell.Status cellStatus = Cell.Status.UNKNOWN;
 
-        while (cell != Cell.Status.EMPTY) {
+        int[] point;
+        while (cellStatus != Cell.Status.EMPTY && cellStatus != Cell.Status.MINE) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
-            int[] point = getCoordinates();
+            if (player.getOpponentShipCells().size() != 0) {
+                System.out.println("Желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да");
+                int decision = scanner.nextInt();
+                if (decision == 1) point = player.getOpponentShipCell();
+                else point = getCoordinates();
+            } else point = getCoordinates();
 
             System.out.printf("Игрок %d походил по горизонтали на %d и по вертикали на %d.", who, point[1] + 1, point[0] + 1);
             System.out.println();
 
-            switch (cell = attacked.getCellStatus(point[0], point[1])) {
+            switch (cellStatus = attacked.getCellStatus(point[0], point[1])) {
                 case SHIP -> {
                     attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
                     opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
@@ -120,6 +145,18 @@ public class Console{
                     opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
                 }
                 case MARKED -> System.out.println("Эта зона уже поражена.");
+                case MINE -> {
+                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+
+                    System.out.println("Вы попали на мину ! :( Введите координаты клетки одного из своих кораблей! ");
+                    int[] coord = getCoordinates();
+                    while (player.getField().getCellStatus(coord[0], coord[1]) != Cell.Status.SHIP) {
+                        System.out.println("Не обманывайте, там у вас нет корабля, введите координаты заново! ");
+                        coord = getCoordinates();
+                    }
+                    playerAttacked.setOpponentShipCells(coord);
+                }
             }
             System.out.println("Поле противника: ");
             print(opponent.getField());
