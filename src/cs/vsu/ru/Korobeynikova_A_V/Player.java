@@ -1,5 +1,6 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 
 import java.util.List;
@@ -26,26 +27,26 @@ public class Player {
 
     private void makeVerticalShip(Ship ship) {
         for (int row = ship.getStartingPosition()[0]; row < ship.getStartingPosition()[0] + ship.getShipType(); row++) {
-            field.setCellStatus(row, ship.getStartingPosition()[1], PlayingField.Status.SHIP);
+            field.setCellStatus(row, ship.getStartingPosition()[1], Cell.Status.SHIP);
         }
     }
 
     private void makeHorizontalShip(Ship ship) {
         for (int col = ship.getStartingPosition()[1]; col < ship.getStartingPosition()[1] + ship.getShipType(); col++) {
-            field.setCellStatus(ship.getStartingPosition()[0], col, PlayingField.Status.SHIP);
+            field.setCellStatus(ship.getStartingPosition()[0], col, Cell.Status.SHIP);
         }
     }
 
 
-    public boolean hurtOrKill(Ship ship) {
+    public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
-            for (int row = ship.getStartingPosition()[0]; row <= ship.getStartingPosition()[0] + ship.getShipType(); row++) {
-                if (field.getCellStatus(row, ship.getStartingPosition()[1]) == PlayingField.Status.SHIP) return false; //ранил
+            for (int row = ship.getStartingPosition()[0]; row < ship.getStartingPosition()[0] + ship.getShipType(); row++) {
+                if (opponentsField.getCellStatus(row, ship.getStartingPosition()[1]) == Cell.Status.SHIP) return false; //ранил
             }
             return true; //убил
         } else if (ship.getOrientation() == Ship.Orientation.HORIZONTAL) {
-            for (int col = ship.getStartingPosition()[1]; col <= ship.getStartingPosition()[1] + ship.getShipType(); col++) {
-                if (field.getCellStatus(ship.getStartingPosition()[0], col) == PlayingField.Status.SHIP) return false; //ранил
+            for (int col = ship.getStartingPosition()[1]; col < ship.getStartingPosition()[1] + ship.getShipType(); col++) {
+                if (opponentsField.getCellStatus(ship.getStartingPosition()[0], col) == Cell.Status.SHIP) return false; //ранил
             }
             return true; //убил
         }
@@ -84,7 +85,7 @@ public class Player {
                 int col = ship.getStartingPosition()[1] - 1;
                 while (col <= ship.getStartingPosition()[1] + 1) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == PlayingField.Status.SHIP) return false;
+                        if (field.getCellStatus(row, col) == Cell.Status.SHIP) return false;
                     }
                     col++;
                 }
@@ -102,7 +103,7 @@ public class Player {
                 int col = ship.getStartingPosition()[1] - 1;
                 while (col <= ship.getStartingPosition()[1] + ship.getShipType()) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == PlayingField.Status.SHIP) return false;
+                        if (field.getCellStatus(row, col) == Cell.Status.SHIP) return false;
                     }
                     col++;
                 }
@@ -116,7 +117,7 @@ public class Player {
         return field;
     }
 
-    public void setField(char[][] field) {
+    public void setField(Cell[][] field) {
         PlayingField newField = new PlayingField();
         newField.setField(field);
         this.field = newField;

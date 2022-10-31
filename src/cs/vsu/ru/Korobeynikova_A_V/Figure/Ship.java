@@ -1,10 +1,10 @@
-package cs.vsu.ru.Korobeynikova_A_V;
+package cs.vsu.ru.Korobeynikova_A_V.Figure;
 
 public class Ship {
 
     int[] startingPosition;
     int shipType;
-    Orientation orientation;// todo сделать енумы
+    Orientation orientation;
 
     public enum Orientation {
         VERTICAL,

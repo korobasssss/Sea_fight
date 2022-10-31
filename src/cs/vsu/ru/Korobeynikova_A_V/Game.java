@@ -5,6 +5,7 @@ import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import java.util.ArrayList;
 
 public class Game {
+    int countShips = 10;
 
     private void attacks(Player player1, Player player2, Console console) {
         int who = 1; // 1 - 1 игрок, 2 - 2 игрок
@@ -20,8 +21,8 @@ public class Game {
         }
     }
     public void game() {
-        Player player1 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), 10);
-        Player player2 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), 10);
+        Player player1 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), countShips);
+        Player player2 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField(), countShips);
 
         Console console = new Console();
 

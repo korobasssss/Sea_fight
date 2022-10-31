@@ -1,5 +1,6 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
 
@@ -36,13 +37,12 @@ public class Console{
             decision = scanner.nextInt();
         }
 
-
         if (decision == 0) {
             System.out.println("Случайная расстановка кораблей: ");
             player.setShips(RandomPlacements.getRandomField());
         } else makeField(player);
 
-        print(player.getField().toArray());
+        print(player.getField().getField());
     }
 
     private void makeField(Player player) {
@@ -82,7 +82,7 @@ public class Console{
                 player.setShips(ship);
                 player.makeSheep(ship);
 
-                print(player.getField().toArray());
+                print(player.getField().getField());
             }
             shipCells -= 1;
             shipCellsCount++;
@@ -90,9 +90,9 @@ public class Console{
     }
 
     public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, int sheepCount, PlayingField opponent) {
-        PlayingField.Status cell = PlayingField.Status.UNKNOWN;
+        Cell.Status cell = Cell.Status.UNKNOWN;
 
-        while (cell != PlayingField.Status.EMPTY) {
+        while (cell != Cell.Status.EMPTY) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
             int[] point = getCoordinates();
@@ -102,30 +102,30 @@ public class Console{
 
             switch (cell = attacked.getCellStatus(point[0], point[1])) {
                 case SHIP -> {
-                    attacked.setCellStatus(point[0], point[1], PlayingField.Status.MARKED);
-                    opponent.setCellStatus(point[0], point[1], PlayingField.Status.MARKED);
+                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
 
-                    if (player.hurtOrKill(playerAttacked.findShip(point[0], point[1]))) {
+                    if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(point[0], point[1]))) {
                         System.out.printf("Игрок %d ранил корабль другого игрока", who);
                         System.out.println();
                     } else {
                         System.out.printf("Игрок %d убил корабль другого игрока", who);
                         System.out.println();
-                        sheepCount--;
+                        playerAttacked.countShips--;
                     }
                 }
                 case EMPTY -> {
                     System.out.println("Мимо.");
-                    attacked.setCellStatus(point[0], point[1], PlayingField.Status.MARKED);
-                    opponent.setCellStatus(point[0], point[1], PlayingField.Status.MARKED);
+                    attacked.setCellStatus(point[0], point[1], Cell.Status.MARKED);
+                    opponent.setCellStatus(point[0], point[1], Cell.Status.MARKED);
                 }
                 case MARKED -> System.out.println("Эта зона уже поражена.");
             }
             System.out.println("Поле противника: ");
-            print(opponent.toArray());
+            print(opponent.getField());
 
             System.out.printf("Поле %d игрока: ", who);
-            print(player.getField().toArray());
+            print(player.getField().getField());
         }
     }
 
@@ -135,10 +135,13 @@ public class Console{
     }
 
 
-    private void print(char[][] arr) {
+    private void print(Cell[][] arr) {
         System.out.println();
-        for (char[] chars : arr) {
-            System.out.println(chars);
+        for (int row = 0; row < arr.length; row++) {
+            for (int col = 0; col < arr.length; col++) {
+                System.out.print(arr[row][col].visual);
+            }
+            System.out.println();
         }
         System.out.println();
     }

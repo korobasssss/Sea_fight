@@ -1,6 +1,6 @@
 package cs.vsu.ru.Korobeynikova_A_V.field;
 
-import cs.vsu.ru.Korobeynikova_A_V.Ship;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 
 import java.util.ArrayList;
 import java.util.List;
