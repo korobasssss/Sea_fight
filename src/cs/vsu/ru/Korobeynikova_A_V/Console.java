@@ -1,12 +1,15 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Minesweeper;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
 
+import java.awt.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class Console{
@@ -49,6 +52,7 @@ public class Console{
             makeShips(player);
         }
         makeMines(player);
+        makeMineSweepers(player);
     }
 
     private void makeMines(Player player) {
@@ -56,8 +60,8 @@ public class Console{
             System.out.println("Введите координаты минного поля: ");
             Mine mine = new Mine(getCoordinates(), Mine.Status.NOT_ACTIVATED);
             player.setMines(mine);
-            while (player.getField().getCellStatus(mine.getPosition().getVertical(), mine.getPosition().getHorizontal()) == Cell.Status.SHIP) {
-                System.out.println("Вы не можете поставить сюда корабль! Введите координаты заново. ");
+            while (!player.canMakeMineOrMinesweeperOrNot(mine.getPosition())) {
+                System.out.println("Вы не можете поставить сюда мину! Введите координаты заново. ");
                 mine.setPosition(getCoordinates());
                 player.setMines(mine);
             }
@@ -65,6 +69,22 @@ public class Console{
             print(player.getField().getField());
         }
     }
+
+    private void makeMineSweepers(Player player) {
+        for (int i = 0; i < player.countMines; i++) {
+            System.out.println("Введите координаты минного тральщика: ");
+            Minesweeper minesweeper = new Minesweeper(getCoordinates(), Minesweeper.Status.NOT_ACTIVATED);
+            player.setMinesweepers(minesweeper);
+            while (!player.canMakeMineOrMinesweeperOrNot(minesweeper.getPosition())) {
+                System.out.println("Вы не можете поставить сюда минного тральщика! Введите координаты заново. ");
+                minesweeper.setPosition(getCoordinates());
+                player.setMinesweepers(minesweeper);
+            }
+            player.getField().setCellStatus(minesweeper.getPosition().getVertical(), minesweeper.getPosition().getHorizontal(), Cell.Status.MINE);
+            print(player.getField().getField());
+        }
+    }
+
 
     private void makeShips(Player player) {
         int shipCells = 4; // кол-во типов кораблей
@@ -110,6 +130,13 @@ public class Console{
         }
     }
 
+    private boolean cellIsOpponentMine(List<Mine> oppMine, Coordinate coord) {
+        for (int i = 0; i < oppMine.size(); i++) {
+            if (oppMine.get(i).getPosition() == coord) return true;
+        }
+        return false;
+    }
+
     public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, PlayingField opponent) {
         Cell.Status cellStatus = Cell.Status.UNKNOWN;
 
@@ -117,12 +144,20 @@ public class Console{
         while (cellStatus != Cell.Status.EMPTY && cellStatus != Cell.Status.MINE) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
-            if (player.getOpponentShipCells().size() != 0) {
+
+            if (player.getOpponentShipCells().size() > 0) { // если известны координаты частей кораблей противника
                 System.out.println("Желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да");
                 int decision = scanner.nextInt();
                 if (decision == 1) point = player.getOpponentShipCell();
                 else point = getCoordinates();
             } else point = getCoordinates();
+
+            if (player.getOpponentMines().size() > 0) { // если известно местоположение мин противника
+                while (cellIsOpponentMine(player.getOpponentMines(), point)) {
+                    System.out.println("Вы знаете, что там стоит мина противника, выберите другую клетку: ");
+                    point = getCoordinates();
+                }
+            }
 
             System.out.printf("Игрок %d походил по горизонтали на %d и по вертикали на %d.", who, point.getHorizontal() + 1, point.getVertical() + 1);
             System.out.println();
@@ -160,6 +195,23 @@ public class Console{
                     Coordinate coord = getCoordinates();
                     while (player.getField().getCellStatus(coord.getVertical(), coord.getHorizontal()) != Cell.Status.SHIP) {
                         System.out.println("Не обманывайте, там у вас нет корабля, введите координаты заново! ");
+                        coord = getCoordinates();
+                    }
+                    playerAttacked.setOpponentShipCells(coord);
+                }
+                case MINESWEEPER -> {
+                    for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
+                        if (playerAttacked.getMinesweepers().get(i).getPosition().getVertical() == point.getVertical() && playerAttacked.getMinesweepers().get(i).getPosition().getHorizontal() == point.getHorizontal()) {
+                            playerAttacked.getMinesweepers().get(i).setStatus(Minesweeper.Status.ACTIVATED); break;
+                        }
+                    }
+                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+
+                    System.out.println("Вы попали на минного тральщика ! :( Введите координаты клетки одной из своих мин! ");
+                    Coordinate coord = getCoordinates();
+                    while (player.getField().getCellStatus(coord.getVertical(), coord.getHorizontal()) != Cell.Status.MINE) {
+                        System.out.println("Не обманывайте, там у вас нет мины, введите координаты заново! ");
                         coord = getCoordinates();
                     }
                     playerAttacked.setOpponentShipCells(coord);

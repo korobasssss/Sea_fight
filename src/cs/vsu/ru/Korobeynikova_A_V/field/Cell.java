@@ -9,7 +9,8 @@ public class Cell {
         MARKED,
         EMPTY,
         UNKNOWN,
-        MINE
+        MINE,
+        MINESWEEPER
     }
 
     public Cell(Status status) {

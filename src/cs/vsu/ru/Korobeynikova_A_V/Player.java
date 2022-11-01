@@ -1,6 +1,7 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Minesweeper;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
@@ -14,9 +15,12 @@ public class Player {
     PlayingField opponentsField;
     List<Ship> ships;
     List<Mine> mines;
+    List<Minesweeper> minesweepers;
     Stack<Coordinate> opponentShipCells;
+    List<Mine> opponentMines;
     int countShips;
     int countMines;
+    int countMinesweepers;
 
 
     public Player(PlayingField field, List<Ship> ships, List<Mine> mines, PlayingField opponentsField, int countShips, int countMines) {
@@ -47,7 +51,6 @@ public class Player {
             field.setCellStatus(ship.getStartingPosition().getVertical(), col, Cell.Status.SHIP);
         }
     }
-
 
     public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
@@ -114,7 +117,7 @@ public class Player {
                 int col = ship.getStartingPosition().getHorizontal() - 1;
                 while (col <= ship.getStartingPosition().getHorizontal() + ship.getShipType()) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == Cell.Status.SHIP) return false;
+                        if (field.getCellStatus(row, col) == Cell.Status.SHIP || field.getCellStatus(row, col) == Cell.Status.MINE) return false;
                     }
                     col++;
                 }
@@ -123,6 +126,25 @@ public class Player {
         }
         return true;
     }
+
+    public boolean canMakeMineOrMinesweeperOrNot(Coordinate coord) {
+        int row = coord.getVertical() - 1;
+
+        while(row <= coord.getVertical() + 1) {
+            if (row  >= 0 && row < field.length()) {
+                int col = coord.getHorizontal() - 1;
+                while (col <= coord.getHorizontal() + 1) {
+                    if (col  >= 0 && col < field.length()) {
+                        if (field.getCellStatus(row, col) == Cell.Status.SHIP || field.getCellStatus(row, col) == Cell.Status.MINE || field.getCellStatus(row, col) == Cell.Status.MINESWEEPER) return false;
+                    }
+                    col++;
+                }
+            }
+            row++;
+        }
+        return true;
+    }
+
 
     public PlayingField getField() {
         return field;
@@ -191,5 +213,24 @@ public class Player {
 
     public PlayingField getOpponentsField() {
         return opponentsField;
+    }
+
+    public List<Minesweeper> getMinesweepers() {
+        return minesweepers;
+    }
+    public void setMinesweepers(Minesweeper minesweepers) {
+        this.minesweepers.add(minesweepers);
+    }
+
+    public int getCountMinesweepers() {
+        return countMinesweepers;
+    }
+
+    public List<Mine> getOpponentMines() {
+        return opponentMines;
+    }
+
+    public void setOpponentMines(List<Mine> opponentMines) {
+        this.opponentMines = opponentMines;
     }
 }
