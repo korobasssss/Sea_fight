@@ -150,7 +150,7 @@ public class Console{
                 case MINE -> {
                     for (int i = 0; i < playerAttacked.getMines().size(); i++) {
                         if (playerAttacked.getMines().get(i).getPosition().getVertical() == point.getVertical() && playerAttacked.getMines().get(i).getPosition().getHorizontal() == point.getHorizontal()) {
-                            playerAttacked.getMines().get(i).setStatus(Mine.Status.NOT_ACTIVATED); break;
+                            playerAttacked.getMines().get(i).setStatus(Mine.Status.ACTIVATED); break;
                         }
                     }
                     attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
