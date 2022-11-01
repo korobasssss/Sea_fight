@@ -32,7 +32,7 @@ public class Cell {
         if (status == Status.MARKED) return  '#';
         if (status == Status.UNKNOWN) return  '?';
         if (status == Status.MINE) return  '△';
-
+        if (status == Status.MINESWEEPER) return '▲';
         return ' ';
     }
 
