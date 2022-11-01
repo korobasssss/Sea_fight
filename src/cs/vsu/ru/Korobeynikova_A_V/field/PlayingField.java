@@ -27,12 +27,12 @@ public class PlayingField {
         }
     }
 
-    public void setCellStatus(int row, int col, Cell.Status status) {
-        field[row][col].setStatus(status);
+    public void setCellStatus(Coordinate coordinate, Cell.Status status) {
+        field[coordinate.getVertical()][coordinate.getHorizontal()].setStatus(status);
     }
 
-    public Cell.Status getCellStatus(int row, int col) {
-        return field[row][col].status;
+    public Cell.Status getCellStatus(Coordinate coordinate) {
+        return field[coordinate.getVertical()][coordinate.getHorizontal()].status;
     }
 
     public int length() {

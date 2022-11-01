@@ -6,6 +6,7 @@ import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
+import cs.vsu.ru.Korobeynikova_A_V.field.Submarine;
 
 import java.util.List;
 import java.util.Stack;
@@ -18,20 +19,21 @@ public class Player {
     List<Minesweeper> minesweepers;
     Stack<Coordinate> opponentShipCells;
     List<Mine> opponentMines;
-    int countShips;
-    int countMines;
-    int countMinesweepers;
+    List<Submarine> submarines;
+    Stack<Coordinate> shotFromASubmarine;
+    int countShips = 10;
+    int countMines = 2;
+    int countMinesweepers = 1;
+    int countSubmarines = 1;
 
 
-    public Player(PlayingField field, List<Ship> ships, List<Mine> mines, PlayingField opponentsField, int countShips, int countMines) {
+    public Player(PlayingField field, List<Ship> ships, List<Mine> mines, PlayingField opponentsField) {
         opponentsField.unknownField();
 
         this.field = field;
         this.ships = ships;
         this.mines = mines;
         this.opponentsField = opponentsField;
-        this.countShips = countShips;
-        this.countMines = countMines;
         this.opponentShipCells = new Stack<>();
     }
 
@@ -41,26 +43,34 @@ public class Player {
     }
 
     private void makeVerticalShip(Ship ship) {
+        Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getVertical());
         for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + ship.getShipType(); row++) {
-            field.setCellStatus(row, ship.getStartingPosition().getHorizontal(), Cell.Status.SHIP);
+            coordinate.setVertical(row);
+            field.setCellStatus(coordinate, Cell.Status.SHIP);
         }
     }
 
     private void makeHorizontalShip(Ship ship) {
+        Coordinate coordinate = new Coordinate(ship.getStartingPosition().getVertical(), 0);
         for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + ship.getShipType(); col++) {
-            field.setCellStatus(ship.getStartingPosition().getVertical(), col, Cell.Status.SHIP);
+            coordinate.setHorizontal(col);
+            field.setCellStatus(coordinate, Cell.Status.SHIP);
         }
     }
 
     public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
+            Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getHorizontal());
             for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + ship.getShipType(); row++) {
-                if (opponentsField.getCellStatus(row, ship.getStartingPosition().getHorizontal()) == Cell.Status.SHIP) return false; //ранил
+                coordinate.setVertical(row);
+                if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
             return true; //убил
         } else if (ship.getOrientation() == Ship.Orientation.HORIZONTAL) {
+            Coordinate coordinate = new Coordinate(ship.getStartingPosition().getVertical(), 0);
             for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + ship.getShipType(); col++) {
-                if (opponentsField.getCellStatus(ship.getStartingPosition().getVertical(), col) == Cell.Status.SHIP) return false; //ранил
+                coordinate.setHorizontal(col);
+                if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
             return true; //убил
         }
@@ -94,12 +104,14 @@ public class Player {
     public boolean canVerticalMakeShipOrNot(Ship ship) {
         int row = ship.getStartingPosition().getVertical() - 1;
 
+        Coordinate coordinate = new Coordinate(0, 0);
         while(row <= ship.getStartingPosition().getVertical() + ship.getShipType()) {
             if (row  >= 0 && row < field.length()) {
                 int col = ship.getStartingPosition().getHorizontal() - 1;
                 while (col <= ship.getStartingPosition().getHorizontal() + 1) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == Cell.Status.SHIP) return false;
+                        coordinate.setVertical(row); coordinate.setHorizontal(col);
+                        if (field.getCellStatus(coordinate) == Cell.Status.SHIP) return false;
                     }
                     col++;
                 }
@@ -112,12 +124,14 @@ public class Player {
     public boolean canMakeHorizontalShipOrNot(Ship ship) {
         int row = ship.getStartingPosition().getVertical() - 1;
 
+        Coordinate coordinate = new Coordinate(0, 0);
         while(row <= ship.getStartingPosition().getVertical() + 1) {
             if (row  >= 0 && row < field.length()) {
                 int col = ship.getStartingPosition().getHorizontal() - 1;
                 while (col <= ship.getStartingPosition().getHorizontal() + ship.getShipType()) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == Cell.Status.SHIP || field.getCellStatus(row, col) == Cell.Status.MINE) return false;
+                        coordinate.setVertical(row); coordinate.setHorizontal(col);
+                        if (field.getCellStatus(coordinate) == Cell.Status.SHIP || field.getCellStatus(coordinate) == Cell.Status.MINE || field.getCellStatus(coordinate) == Cell.Status.MINESWEEPER || field.getCellStatus(coordinate) == Cell.Status.SUBMARINE) return false;
                     }
                     col++;
                 }
@@ -130,12 +144,14 @@ public class Player {
     public boolean canMakeMineOrMinesweeperOrNot(Coordinate coord) {
         int row = coord.getVertical() - 1;
 
+        Coordinate coordinate = new Coordinate(0, 0);
         while(row <= coord.getVertical() + 1) {
             if (row  >= 0 && row < field.length()) {
                 int col = coord.getHorizontal() - 1;
                 while (col <= coord.getHorizontal() + 1) {
                     if (col  >= 0 && col < field.length()) {
-                        if (field.getCellStatus(row, col) == Cell.Status.SHIP || field.getCellStatus(row, col) == Cell.Status.MINE || field.getCellStatus(row, col) == Cell.Status.MINESWEEPER) return false;
+                        coordinate.setVertical(row); coordinate.setHorizontal(col);
+                        if (field.getCellStatus(coordinate) == Cell.Status.SHIP || field.getCellStatus(coordinate) == Cell.Status.MINE || field.getCellStatus(coordinate) == Cell.Status.MINESWEEPER || field.getCellStatus(coordinate) == Cell.Status.SUBMARINE) return false;
                     }
                     col++;
                 }
@@ -232,5 +248,37 @@ public class Player {
 
     public void setOpponentMines(List<Mine> opponentMines) {
         this.opponentMines = opponentMines;
+    }
+
+    public List<Submarine> getSubmarineList() {
+        return submarines;
+    }
+
+    public Submarine getSubmarines() {
+        return submarines.get(0);
+    }
+
+    public void setSubmarineList(List<Submarine> submarines) {
+        this.submarines = submarines;
+    }
+
+    public void setSubmarines(Submarine submarines) {
+        this.submarines.add(submarines);
+    }
+
+    public int getCountSubmarines() {
+        return countSubmarines;
+    }
+
+    public Coordinate getShotFromASubmarine() {
+        return shotFromASubmarine.pop();
+    }
+
+    public List<Coordinate> getShotFromASubmarineList() {
+        return shotFromASubmarine;
+    }
+
+    public void setShotFromASubmarine(Coordinate shotFromASubmarine) {
+        this.shotFromASubmarine.push(shotFromASubmarine);
     }
 }

@@ -10,7 +10,8 @@ public class Cell {
         EMPTY,
         UNKNOWN,
         MINE,
-        MINESWEEPER
+        MINESWEEPER,
+        SUBMARINE
     }
 
     public Cell(Status status) {
@@ -33,6 +34,7 @@ public class Cell {
         if (status == Status.UNKNOWN) return  '?';
         if (status == Status.MINE) return  '△';
         if (status == Status.MINESWEEPER) return '▲';
+        if (status == Status.SUBMARINE) return '◊';
         return ' ';
     }
 

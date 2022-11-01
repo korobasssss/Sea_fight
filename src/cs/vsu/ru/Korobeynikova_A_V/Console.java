@@ -3,12 +3,8 @@ package cs.vsu.ru.Korobeynikova_A_V;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Minesweeper;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
-import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
-import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
-import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
-import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
+import cs.vsu.ru.Korobeynikova_A_V.field.*;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -65,13 +61,13 @@ public class Console{
                 mine.setPosition(getCoordinates());
                 player.setMines(mine);
             }
-            player.getField().setCellStatus(mine.getPosition().getVertical(), mine.getPosition().getHorizontal(), Cell.Status.MINE);
+            player.getField().setCellStatus(mine.getPosition(), Cell.Status.MINE);
             print(player.getField().getField());
         }
     }
 
     private void makeMineSweepers(Player player) {
-        for (int i = 0; i < player.countMines; i++) {
+        for (int i = 0; i < player.countMinesweepers; i++) {
             System.out.println("Введите координаты минного тральщика: ");
             Minesweeper minesweeper = new Minesweeper(getCoordinates(), Minesweeper.Status.NOT_ACTIVATED);
             player.setMinesweepers(minesweeper);
@@ -80,7 +76,22 @@ public class Console{
                 minesweeper.setPosition(getCoordinates());
                 player.setMinesweepers(minesweeper);
             }
-            player.getField().setCellStatus(minesweeper.getPosition().getVertical(), minesweeper.getPosition().getHorizontal(), Cell.Status.MINE);
+            player.getField().setCellStatus(minesweeper.getPosition(), Cell.Status.MINE);
+            print(player.getField().getField());
+        }
+    }
+
+    private void makeSubmarines(Player player) {
+        for (int i = 0; i < player.countSubmarines; i++) {
+            System.out.println("Введите координаты подлодки: ");
+            Submarine submarine = new Submarine(getCoordinates(), Submarine.Status.NOT_ACTIVATED);
+            player.setSubmarines(submarine);
+            while (player.getField().getCellStatus(submarine.getPosition()) != Cell.Status.EMPTY) {
+                System.out.println("Вы не можете поставить сюда подлодку! Введите координаты заново. ");
+                submarine.setPosition(getCoordinates());
+                player.setSubmarines(submarine);
+            }
+            player.getField().setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
             print(player.getField().getField());
         }
     }
@@ -131,8 +142,8 @@ public class Console{
     }
 
     private boolean cellIsOpponentMine(List<Mine> oppMine, Coordinate coord) {
-        for (int i = 0; i < oppMine.size(); i++) {
-            if (oppMine.get(i).getPosition() == coord) return true;
+        for (Mine mine : oppMine) {
+            if (mine.getPosition() == coord) return true;
         }
         return false;
     }
@@ -140,7 +151,7 @@ public class Console{
     public void moveOnTheOpponent(int who, Player player, Player playerAttacked, PlayingField attacked, PlayingField opponent) {
         Cell.Status cellStatus = Cell.Status.UNKNOWN;
 
-        Coordinate point;
+        Coordinate point = new Coordinate(0, 0);
         while (cellStatus != Cell.Status.EMPTY && cellStatus != Cell.Status.MINE) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
@@ -150,6 +161,8 @@ public class Console{
                 int decision = scanner.nextInt();
                 if (decision == 1) point = player.getOpponentShipCell();
                 else point = getCoordinates();
+            } else if (player.getShotFromASubmarineList().size() > 0) {
+                point = player.getShotFromASubmarine();
             } else point = getCoordinates();
 
             if (player.getOpponentMines().size() > 0) { // если известно местоположение мин противника
@@ -162,10 +175,10 @@ public class Console{
             System.out.printf("Игрок %d походил по горизонтали на %d и по вертикали на %d.", who, point.getHorizontal() + 1, point.getVertical() + 1);
             System.out.println();
 
-            switch (cellStatus = attacked.getCellStatus(point.getVertical(), point.getHorizontal())) {
+            switch (cellStatus = attacked.getCellStatus(point)) {
                 case SHIP -> {
-                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
-                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    attacked.setCellStatus(point, Cell.Status.MARKED);
+                    opponent.setCellStatus(point, Cell.Status.MARKED);
 
                     if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(point.getVertical(), point.getHorizontal()))) {
                         System.out.printf("Игрок %d ранил корабль другого игрока", who);
@@ -178,8 +191,8 @@ public class Console{
                 }
                 case EMPTY -> {
                     System.out.println("Мимо.");
-                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
-                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    attacked.setCellStatus(point, Cell.Status.MARKED);
+                    opponent.setCellStatus(point, Cell.Status.MARKED);
                 }
                 case MARKED -> System.out.println("Эта зона уже поражена.");
                 case MINE -> {
@@ -188,12 +201,12 @@ public class Console{
                             playerAttacked.getMines().get(i).setStatus(Mine.Status.ACTIVATED); break;
                         }
                     }
-                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
-                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    attacked.setCellStatus(point, Cell.Status.MARKED);
+                    opponent.setCellStatus(point, Cell.Status.MARKED);
 
                     System.out.println("Вы попали на мину ! :( Введите координаты клетки одного из своих кораблей! ");
                     Coordinate coord = getCoordinates();
-                    while (player.getField().getCellStatus(coord.getVertical(), coord.getHorizontal()) != Cell.Status.SHIP) {
+                    while (player.getField().getCellStatus(coord) != Cell.Status.SHIP) {
                         System.out.println("Не обманывайте, там у вас нет корабля, введите координаты заново! ");
                         coord = getCoordinates();
                     }
@@ -205,16 +218,25 @@ public class Console{
                             playerAttacked.getMinesweepers().get(i).setStatus(Minesweeper.Status.ACTIVATED); break;
                         }
                     }
-                    attacked.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
-                    opponent.setCellStatus(point.getVertical(), point.getHorizontal(), Cell.Status.MARKED);
+                    attacked.setCellStatus(point, Cell.Status.MARKED);
+                    opponent.setCellStatus(point, Cell.Status.MARKED);
 
                     System.out.println("Вы попали на минного тральщика ! :( Введите координаты клетки одной из своих мин! ");
                     Coordinate coord = getCoordinates();
-                    while (player.getField().getCellStatus(coord.getVertical(), coord.getHorizontal()) != Cell.Status.MINE) {
+                    while (player.getField().getCellStatus(coord) != Cell.Status.MINE) {
                         System.out.println("Не обманывайте, там у вас нет мины, введите координаты заново! ");
                         coord = getCoordinates();
                     }
                     playerAttacked.setOpponentShipCells(coord);
+                }
+                case SUBMARINE -> {
+                    playerAttacked.getMinesweepers().get(0).setStatus(Minesweeper.Status.ACTIVATED);
+
+                    attacked.setCellStatus(point, Cell.Status.MARKED);
+                    opponent.setCellStatus(point, Cell.Status.MARKED);
+
+                    System.out.println("Вы попали в подводную лодку ! Ожидайте выстрела на ваше поле! ");
+                    playerAttacked.setShotFromASubmarine(point);
                 }
             }
             System.out.println("Поле противника: ");
