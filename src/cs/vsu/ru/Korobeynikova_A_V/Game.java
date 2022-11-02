@@ -20,8 +20,8 @@ public class Game {
         }
     }
     public void game() {
-        Player player1 = new Player(new PlayingField(), new ArrayList<>(), new ArrayList<>(), new PlayingField());
-        Player player2 = new Player(new PlayingField(), new ArrayList<>(), new ArrayList<>(), new PlayingField());
+        Player player1 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField());
+        Player player2 = new Player(new PlayingField(), new ArrayList<>(), new PlayingField());
 
         Console console = new Console();
 

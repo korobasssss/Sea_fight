@@ -6,6 +6,7 @@ import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,24 +16,28 @@ public class Player {
     List<Ship> ships;
     List<AdditionalArrangements> mines;
     List<AdditionalArrangements> minesweepers;
+    List<AdditionalArrangements> submarines;
     Stack<Coordinate> opponentShipCells;
     List<AdditionalArrangements> opponentMines;
-    List<AdditionalArrangements> submarines;
     Stack<Coordinate> shotFromASubmarine;
     int countShips = 10;
-    int countMines = 2;
-    int countMinesweepers = 1;
-    int countSubmarines = 1;
+    final int countMines = 2;
+    final int countMinesweepers = 1;
+    final int countSubmarines = 1;
 
 
-    public Player(PlayingField field, List<Ship> ships, List<AdditionalArrangements> mines, PlayingField opponentsField) {
+    public Player(PlayingField field, List<Ship> ships, PlayingField opponentsField) {
         opponentsField.unknownField();
 
         this.field = field;
         this.ships = ships;
-        this.mines = mines;
+        this.mines = new ArrayList<>();
+        this.minesweepers = new ArrayList<>();
+        this.submarines = new ArrayList<>();
         this.opponentsField = opponentsField;
         this.opponentShipCells = new Stack<>();
+        this.opponentMines = new ArrayList<>();
+        this.shotFromASubmarine = new Stack<>();
     }
 
     public void makeSheep(Ship ship) {
@@ -41,7 +46,7 @@ public class Player {
     }
 
     private void makeVerticalShip(Ship ship) {
-        Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getVertical());
+        Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getHorizontal());
         for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + ship.getShipType(); row++) {
             coordinate.setVertical(row);
             field.setCellStatus(coordinate, Cell.Status.SHIP);
@@ -209,16 +214,8 @@ public class Player {
         this.mines.add(mines);
     }
 
-    public void setCountShips(int countShips) {
-        this.countShips = countShips;
-    }
-
     public int getCountMines() {
         return countMines;
-    }
-
-    public void setCountMines(int countMines) {
-        this.countMines = countMines;
     }
 
     public int getCountShips() {
@@ -232,6 +229,7 @@ public class Player {
     public List<AdditionalArrangements> getMinesweepers() {
         return minesweepers;
     }
+
     public void setMinesweepers(AdditionalArrangements minesweepers) {
         this.minesweepers.add(minesweepers);
     }
