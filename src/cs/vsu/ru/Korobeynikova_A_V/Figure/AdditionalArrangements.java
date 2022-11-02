@@ -1,6 +1,9 @@
-package cs.vsu.ru.Korobeynikova_A_V.field;
+package cs.vsu.ru.Korobeynikova_A_V.Figure;
 
-public class Submarine {
+
+import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
+
+public class AdditionalArrangements {
     Coordinate position;
     Status status;
 
@@ -9,8 +12,9 @@ public class Submarine {
         NOT_ACTIVATED
     }
 
-    public Submarine(Coordinate coordinate, Status status) {
-        this.position = coordinate;
+    public AdditionalArrangements(Coordinate position, Status status) {
+        super();
+        this.position = position;
         this.status = status;
     }
 

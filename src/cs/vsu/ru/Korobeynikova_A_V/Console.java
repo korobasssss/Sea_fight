@@ -1,7 +1,6 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
-import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
-import cs.vsu.ru.Korobeynikova_A_V.Figure.Minesweeper;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.AdditionalArrangements;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.*;
 
@@ -54,7 +53,7 @@ public class Console{
     private void makeMines(Player player) {
         for (int i = 0; i < player.countMines; i++) {
             System.out.println("Введите координаты минного поля: ");
-            Mine mine = new Mine(getCoordinates(), Mine.Status.NOT_ACTIVATED);
+            AdditionalArrangements mine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setMines(mine);
             while (!player.canMakeMineOrMinesweeperOrNot(mine.getPosition())) {
                 System.out.println("Вы не можете поставить сюда мину! Введите координаты заново. ");
@@ -69,7 +68,7 @@ public class Console{
     private void makeMineSweepers(Player player) {
         for (int i = 0; i < player.countMinesweepers; i++) {
             System.out.println("Введите координаты минного тральщика: ");
-            Minesweeper minesweeper = new Minesweeper(getCoordinates(), Minesweeper.Status.NOT_ACTIVATED);
+            AdditionalArrangements minesweeper = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setMinesweepers(minesweeper);
             while (!player.canMakeMineOrMinesweeperOrNot(minesweeper.getPosition())) {
                 System.out.println("Вы не можете поставить сюда минного тральщика! Введите координаты заново. ");
@@ -84,7 +83,7 @@ public class Console{
     private void makeSubmarines(Player player) {
         for (int i = 0; i < player.countSubmarines; i++) {
             System.out.println("Введите координаты подлодки: ");
-            Submarine submarine = new Submarine(getCoordinates(), Submarine.Status.NOT_ACTIVATED);
+            AdditionalArrangements submarine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setSubmarines(submarine);
             while (player.getField().getCellStatus(submarine.getPosition()) != Cell.Status.EMPTY) {
                 System.out.println("Вы не можете поставить сюда подлодку! Введите координаты заново. ");
@@ -141,8 +140,8 @@ public class Console{
         }
     }
 
-    private boolean cellIsOpponentMine(List<Mine> oppMine, Coordinate coord) {
-        for (Mine mine : oppMine) {
+    private boolean cellIsOpponentMine(List<AdditionalArrangements> oppMine, Coordinate coord) {
+        for (AdditionalArrangements mine : oppMine) {
             if (mine.getPosition() == coord) return true;
         }
         return false;
@@ -198,7 +197,7 @@ public class Console{
                 case MINE -> {
                     for (int i = 0; i < playerAttacked.getMines().size(); i++) {
                         if (playerAttacked.getMines().get(i).getPosition().getVertical() == point.getVertical() && playerAttacked.getMines().get(i).getPosition().getHorizontal() == point.getHorizontal()) {
-                            playerAttacked.getMines().get(i).setStatus(Mine.Status.ACTIVATED); break;
+                            playerAttacked.getMines().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
                         }
                     }
                     attacked.setCellStatus(point, Cell.Status.MARKED);
@@ -215,7 +214,7 @@ public class Console{
                 case MINESWEEPER -> {
                     for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
                         if (playerAttacked.getMinesweepers().get(i).getPosition().getVertical() == point.getVertical() && playerAttacked.getMinesweepers().get(i).getPosition().getHorizontal() == point.getHorizontal()) {
-                            playerAttacked.getMinesweepers().get(i).setStatus(Minesweeper.Status.ACTIVATED); break;
+                            playerAttacked.getMinesweepers().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
                         }
                     }
                     attacked.setCellStatus(point, Cell.Status.MARKED);
@@ -230,7 +229,7 @@ public class Console{
                     playerAttacked.setOpponentShipCells(coord);
                 }
                 case SUBMARINE -> {
-                    playerAttacked.getMinesweepers().get(0).setStatus(Minesweeper.Status.ACTIVATED);
+                    playerAttacked.getSubmarineList().get(0).setStatus(AdditionalArrangements.Status.ACTIVATED);
 
                     attacked.setCellStatus(point, Cell.Status.MARKED);
                     opponent.setCellStatus(point, Cell.Status.MARKED);

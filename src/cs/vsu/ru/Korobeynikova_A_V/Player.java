@@ -1,12 +1,10 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
-import cs.vsu.ru.Korobeynikova_A_V.Figure.Mine;
-import cs.vsu.ru.Korobeynikova_A_V.Figure.Minesweeper;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.AdditionalArrangements;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
-import cs.vsu.ru.Korobeynikova_A_V.field.Submarine;
 
 import java.util.List;
 import java.util.Stack;
@@ -15,11 +13,11 @@ public class Player {
     PlayingField field;
     PlayingField opponentsField;
     List<Ship> ships;
-    List<Mine> mines;
-    List<Minesweeper> minesweepers;
+    List<AdditionalArrangements> mines;
+    List<AdditionalArrangements> minesweepers;
     Stack<Coordinate> opponentShipCells;
-    List<Mine> opponentMines;
-    List<Submarine> submarines;
+    List<AdditionalArrangements> opponentMines;
+    List<AdditionalArrangements> submarines;
     Stack<Coordinate> shotFromASubmarine;
     int countShips = 10;
     int countMines = 2;
@@ -27,7 +25,7 @@ public class Player {
     int countSubmarines = 1;
 
 
-    public Player(PlayingField field, List<Ship> ships, List<Mine> mines, PlayingField opponentsField) {
+    public Player(PlayingField field, List<Ship> ships, List<AdditionalArrangements> mines, PlayingField opponentsField) {
         opponentsField.unknownField();
 
         this.field = field;
@@ -199,15 +197,15 @@ public class Player {
         opponentShipCells.push(coord);
     }
 
-    public List<Mine> getMines() {
+    public List<AdditionalArrangements> getMines() {
         return mines;
     }
 
-    public void setMines(List<Mine> mines) {
+    public void setMines(List<AdditionalArrangements> mines) {
         this.mines = mines;
     }
 
-    public void setMines(Mine mines) {
+    public void setMines(AdditionalArrangements mines) {
         this.mines.add(mines);
     }
 
@@ -231,10 +229,10 @@ public class Player {
         return opponentsField;
     }
 
-    public List<Minesweeper> getMinesweepers() {
+    public List<AdditionalArrangements> getMinesweepers() {
         return minesweepers;
     }
-    public void setMinesweepers(Minesweeper minesweepers) {
+    public void setMinesweepers(AdditionalArrangements minesweepers) {
         this.minesweepers.add(minesweepers);
     }
 
@@ -242,27 +240,27 @@ public class Player {
         return countMinesweepers;
     }
 
-    public List<Mine> getOpponentMines() {
+    public List<AdditionalArrangements> getOpponentMines() {
         return opponentMines;
     }
 
-    public void setOpponentMines(List<Mine> opponentMines) {
+    public void setOpponentMines(List<AdditionalArrangements> opponentMines) {
         this.opponentMines = opponentMines;
     }
 
-    public List<Submarine> getSubmarineList() {
+    public List<AdditionalArrangements> getSubmarineList() {
         return submarines;
     }
 
-    public Submarine getSubmarines() {
+    public AdditionalArrangements getSubmarines() {
         return submarines.get(0);
     }
 
-    public void setSubmarineList(List<Submarine> submarines) {
+    public void setSubmarineList(List<AdditionalArrangements> submarines) {
         this.submarines = submarines;
     }
 
-    public void setSubmarines(Submarine submarines) {
+    public void setSubmarines(AdditionalArrangements submarines) {
         this.submarines.add(submarines);
     }
 
