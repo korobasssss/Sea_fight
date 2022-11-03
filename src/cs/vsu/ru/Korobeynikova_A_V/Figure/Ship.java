@@ -5,21 +5,36 @@ import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 public class Ship {
 
     private Coordinate startingPosition;
-    private int shipType;
+    private Type shipType;
     private Orientation orientation;
     private Status status;
 
     public enum Orientation {
         VERTICAL,
         HORIZONTAL
-    } // todo слелать енум статуса жизни, и чтобы не считать кол-во кораблей, просто проходится по их жизни
+    }
 
     public enum Status {
         ALIVE,
         KILLED
     }
 
-    public Ship(Coordinate startingPosition, int shipType, Orientation orientation, Status status) {
+    public enum Type {
+        ONE_CELL("1"),
+        TWO_CELLS("2"),
+        THREE_CELLS("3"),
+        FOURTH_CELLS("4");
+
+        private final String str;
+
+        Type(String str) {
+            this.str = str;
+        }
+
+        public String getString() { return this.str;}
+    }
+
+    public Ship(Coordinate startingPosition, Type shipType, Orientation orientation, Status status) {
         this.startingPosition = startingPosition;
         this.shipType = shipType;
         this.orientation = orientation;
@@ -34,11 +49,11 @@ public class Ship {
         this.startingPosition = startingPosition;
     }
 
-    public int getShipType() {
+    public Type getShipType() {
         return shipType;
     }
 
-    public void setShipType(int shipType) {
+    public void setShipType(Type shipType) {
         this.shipType = shipType;
     }
 

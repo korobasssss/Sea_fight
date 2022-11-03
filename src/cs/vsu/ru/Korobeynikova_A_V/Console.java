@@ -97,32 +97,31 @@ public class Console{
     }
 
 
-    private void makeShips(Player player) {
-        int shipCells = 4; // кол-во типов кораблей
-        int shipCellsCount = 1;
-        while (shipCells > 0) {
+    private void makeShips(Player player) { // кол-во типов кораблей
+        int shipCellsCount = Ship.Type.values().length;
+        for(Ship.Type type : Ship.Type.values()) {
             for (int ships = shipCellsCount; ships > 0; ships--) {
-                Ship ship = new Ship(new Coordinate(0, 0), 0, Ship.Orientation.VERTICAL, Ship.Status.ALIVE);
-                ship.setShipType(shipCells);
-                System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", shipCells);
+                Ship ship = new Ship(new Coordinate(0, 0), type, Ship.Orientation.VERTICAL, Ship.Status.ALIVE);
+                ship.setShipType(type);
+                System.out.printf("%s клеточный корабль вертикальный(0) или горизонтальный(1)? ", type.getString());
                 int orientation = scanner.nextInt();
                 while (orientation != 0 && orientation != 1) {
-                    System.out.printf("Вы ввели неверную цифру. %d клеточный корабль вертикальный(0) или горизонтальный(1)? ", shipCells);
+                    System.out.printf("Вы ввели неверную цифру. %s клеточный корабль вертикальный(0) или горизонтальный(1)? ", type.getString());
                     orientation = scanner.nextInt();
                 }
                 if (orientation == 0) {
                     ship.setOrientation(Ship.Orientation.VERTICAL);
                 } else ship.setOrientation(Ship.Orientation.HORIZONTAL);
-                System.out.printf("Выберите местоположение %d клеточного корабля: ", shipCells);
+                System.out.printf("Выберите местоположение %s клеточного корабля: ", type.getString());
                 System.out.println();
                 ship.setStartingPosition(getCoordinates());
                 if (ship.getOrientation() == Ship.Orientation.VERTICAL){
-                    while ((ship.getStartingPosition().getVertical() + ship.getShipType()) - 1 >= PlayingField.getSize()) {
+                    while ((ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString())) - 1 >= PlayingField.getSize()) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
                 } else {
-                    while ((ship.getStartingPosition().getHorizontal() + ship.getShipType()) - 1 > PlayingField.getSize()) {
+                    while ((ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString())) - 1 > PlayingField.getSize()) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
@@ -136,8 +135,7 @@ public class Console{
 
                 print(player.getField().getField());
             }
-            shipCells -= 1;
-            shipCellsCount++;
+            shipCellsCount--;
         }
     }
 

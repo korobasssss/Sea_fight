@@ -46,7 +46,7 @@ public class Player {
 
     private void makeVerticalShip(Ship ship) {
         Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getHorizontal());
-        for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + ship.getShipType(); row++) {
+        for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString()); row++) {
             coordinate.setVertical(row);
             field.setCellStatus(coordinate, Cell.Status.SHIP);
         }
@@ -54,7 +54,7 @@ public class Player {
 
     private void makeHorizontalShip(Ship ship) {
         Coordinate coordinate = new Coordinate(ship.getStartingPosition().getVertical(), 0);
-        for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + ship.getShipType(); col++) {
+        for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString()); col++) {
             coordinate.setHorizontal(col);
             field.setCellStatus(coordinate, Cell.Status.SHIP);
         }
@@ -63,7 +63,7 @@ public class Player {
     public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
             Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getHorizontal());
-            for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + ship.getShipType(); row++) {
+            for (int row = ship.getStartingPosition().getVertical(); row < ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString()); row++) {
                 coordinate.setVertical(row);
                 if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
@@ -71,7 +71,7 @@ public class Player {
             return true; //убил
         } else if (ship.getOrientation() == Ship.Orientation.HORIZONTAL) {
             Coordinate coordinate = new Coordinate(ship.getStartingPosition().getVertical(), 0);
-            for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + ship.getShipType(); col++) {
+            for (int col = ship.getStartingPosition().getHorizontal(); col < ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString()); col++) {
                 coordinate.setHorizontal(col);
                 if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
@@ -83,20 +83,20 @@ public class Player {
     public Ship findShip(int row, int col) {
         for (Ship ship : ships) {
             if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
-                for (int r = ship.getStartingPosition().getVertical(); r <= ship.getStartingPosition().getVertical() + ship.getShipType(); r++) {
+                for (int r = ship.getStartingPosition().getVertical(); r <= ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString()); r++) {
                     if (r == row && col == ship.getStartingPosition().getHorizontal()) {
                         return ship;
                     }
                 }
             } else {
-                for (int c = ship.getStartingPosition().getHorizontal(); c <= ship.getStartingPosition().getHorizontal() + ship.getShipType(); c++) {
+                for (int c = ship.getStartingPosition().getHorizontal(); c <= ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString()); c++) {
                     if (c == col && row == ship.getStartingPosition().getVertical()) {
                         return ship;
                     }
                 }
             }
         }
-        return new Ship(new Coordinate(0, 0), 0, Ship.Orientation.VERTICAL, Ship.Status.KILLED);
+        return new Ship(new Coordinate(0, 0), Ship.Type.ONE_CELL, Ship.Orientation.VERTICAL, Ship.Status.KILLED);
     }
 
     public boolean canMakeShipOrNot(Ship ship) {
@@ -108,7 +108,7 @@ public class Player {
         int row = ship.getStartingPosition().getVertical() - 1;
 
         Coordinate coordinate = new Coordinate(0, 0);
-        while(row <= ship.getStartingPosition().getVertical() + ship.getShipType()) {
+        while(row <= ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString())) {
             if (row  >= 0 && row < field.length()) {
                 int col = ship.getStartingPosition().getHorizontal() - 1;
                 while (col <= ship.getStartingPosition().getHorizontal() + 1) {
@@ -131,7 +131,7 @@ public class Player {
         while(row <= ship.getStartingPosition().getVertical() + 1) {
             if (row  >= 0 && row < field.length()) {
                 int col = ship.getStartingPosition().getHorizontal() - 1;
-                while (col <= ship.getStartingPosition().getHorizontal() + ship.getShipType()) {
+                while (col <= ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString())) {
                     if (col  >= 0 && col < field.length()) {
                         coordinate.setVertical(row); coordinate.setHorizontal(col);
                         if (field.getCellStatus(coordinate) == Cell.Status.SHIP || field.getCellStatus(coordinate) == Cell.Status.MINE || field.getCellStatus(coordinate) == Cell.Status.MINESWEEPER || field.getCellStatus(coordinate) == Cell.Status.SUBMARINE) return false;
