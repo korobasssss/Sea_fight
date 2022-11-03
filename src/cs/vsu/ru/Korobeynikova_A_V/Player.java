@@ -42,6 +42,7 @@ public class Player {
     public void makeSheep(Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) makeVerticalShip(ship);
         else makeHorizontalShip(ship);
+        this.ships.add(ship);
     }
 
     private void makeVerticalShip(Ship ship) {
@@ -58,6 +59,10 @@ public class Player {
             coordinate.setHorizontal(col);
             field.setCellStatus(coordinate, Cell.Status.SHIP);
         }
+    }
+
+    public void makeMine(AdditionalArrangements additionalArrangements) {
+
     }
 
     public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
@@ -173,10 +178,6 @@ public class Player {
         return ships;
     }
 
-    public void setShips(Ship ships) {
-        this.ships.add(ships);
-    }
-
     public void setShips(List<Ship> ships) {
         this.ships = ships;
         for (Ship ship : ships) {
@@ -200,8 +201,9 @@ public class Player {
         return mines;
     }
 
-    public void setMines(AdditionalArrangements mines) {
-        this.mines.add(mines);
+    public void setMines(AdditionalArrangements mine) {
+        this.mines.add(mine);
+        field.setCellStatus(mine.getPosition(), Cell.Status.MINE);
     }
 
     public int getCountMines() {
@@ -216,8 +218,9 @@ public class Player {
         return minesweepers;
     }
 
-    public void setMinesweepers(AdditionalArrangements minesweepers) {
-        this.minesweepers.add(minesweepers);
+    public void setMinesweepers(AdditionalArrangements minesweeper) {
+        this.minesweepers.add(minesweeper);
+        field.setCellStatus(minesweeper.getPosition(), Cell.Status.MINESWEEPER);
     }
 
     public int getCountMinesweepers() {
@@ -232,8 +235,9 @@ public class Player {
         return submarines;
     }
 
-    public void setSubmarines(AdditionalArrangements submarines) {
-        this.submarines.add(submarines);
+    public void setSubmarines(AdditionalArrangements submarine) {
+        this.submarines.add(submarine);
+        field.setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
     }
 
     public int getCountSubmarines() {

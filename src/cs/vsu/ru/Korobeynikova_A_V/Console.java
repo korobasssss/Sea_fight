@@ -55,13 +55,11 @@ public class Console{
         for (int i = 0; i < player.getCountMines(); i++) {
             System.out.println("Введите координаты минного поля: ");
             AdditionalArrangements mine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
-            player.setMines(mine);
             while (!player.canMakeMineOrMinesweeperOrNot(mine.getPosition())) {
                 System.out.println("Вы не можете поставить сюда мину! Введите координаты заново. ");
                 mine.setPosition(getCoordinates());
-                player.setMines(mine);
             }
-            player.getField().setCellStatus(mine.getPosition(), Cell.Status.MINE);
+            player.setMines(mine);
             print(player.getField().getField());
         }
     }
@@ -70,13 +68,11 @@ public class Console{
         for (int i = 0; i < player.getCountMinesweepers(); i++) {
             System.out.println("Введите координаты минного тральщика: ");
             AdditionalArrangements minesweeper = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
-            player.setMinesweepers(minesweeper);
             while (!player.canMakeMineOrMinesweeperOrNot(minesweeper.getPosition())) {
                 System.out.println("Вы не можете поставить сюда минного тральщика! Введите координаты заново. ");
                 minesweeper.setPosition(getCoordinates());
-                player.setMinesweepers(minesweeper);
             }
-            player.getField().setCellStatus(minesweeper.getPosition(), Cell.Status.MINE);
+            player.setMinesweepers(minesweeper);
             print(player.getField().getField());
         }
     }
@@ -85,13 +81,11 @@ public class Console{
         for (int i = 0; i < player.getCountSubmarines(); i++) {
             System.out.println("Введите координаты подлодки: ");
             AdditionalArrangements submarine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
-            player.setSubmarines(submarine);
             while (player.getField().getCellStatus(submarine.getPosition()) != Cell.Status.EMPTY) {
                 System.out.println("Вы не можете поставить сюда подлодку! Введите координаты заново. ");
                 submarine.setPosition(getCoordinates());
-                player.setSubmarines(submarine);
             }
-            player.getField().setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
+            player.setSubmarines(submarine);
             print(player.getField().getField());
         }
     }
@@ -130,7 +124,6 @@ public class Console{
                     System.out.println("Корабль расположен близко к другим, мы не можем его тут поставить, выберите другое местоположение.");
                     ship.setStartingPosition(getCoordinates());
                 }
-                player.setShips(ship);
                 player.makeSheep(ship);
 
                 print(player.getField().getField());
