@@ -1,8 +1,8 @@
 package cs.vsu.ru.Korobeynikova_A_V.field;
 
 public class Cell {
-    public char visual;
-    public Status status;
+    private char visual;
+    private Status status;
 
     public enum Status {
         SHIP,

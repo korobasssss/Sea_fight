@@ -9,7 +9,7 @@ public class Game {
     private void attacks(Player player1, Player player2, Console console) {
         int who = 1; // 1 - 1 игрок, 2 - 2 игрок
 
-        while (player1.getCountShips() > 0 && player2.getCountShips() > 0) {
+        while (console.shipsLifeStatus(player1.getShips()) && console.shipsLifeStatus(player2.getShips())) {
             if (who == 1) {
                 console.moveOnTheOpponent(who, player1, player2, player2.getField(), player1.getOpponentsField());
                 who = 2;

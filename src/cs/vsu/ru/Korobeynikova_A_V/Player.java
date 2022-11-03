@@ -11,18 +11,18 @@ import java.util.List;
 import java.util.Stack;
 
 public class Player {
-    PlayingField field;
-    PlayingField opponentsField;
-    List<Ship> ships;
-    List<AdditionalArrangements> mines;
-    List<AdditionalArrangements> minesweepers;
-    List<AdditionalArrangements> submarines;
-    Stack<Coordinate> opponentShipCells;
-    List<AdditionalArrangements> opponentMines;
-    Stack<Coordinate> shotFromASubmarine;
-    final int countMines = 2;
-    final int countMinesweepers = 1;
-    final int countSubmarines = 1;
+    private PlayingField field;
+    private PlayingField opponentsField;
+    private List<Ship> ships;
+    private List<AdditionalArrangements> mines;
+    private List<AdditionalArrangements> minesweepers;
+    private List<AdditionalArrangements> submarines;
+    private Stack<Coordinate> opponentShipCells;
+    private List<AdditionalArrangements> opponentMines;
+    private Stack<Coordinate> shotFromASubmarine;
+    private final int countMines = 2;
+    private final int countMinesweepers = 1;
+    private final int countSubmarines = 1;
 
 
     public Player(PlayingField field, List<Ship> ships, PlayingField opponentsField) {
@@ -144,14 +144,14 @@ public class Player {
         return true;
     }
 
-    public boolean canMakeMineOrMinesweeperOrNot(Coordinate coord) {
-        int row = coord.getVertical() - 1;
+    public boolean canMakeMineOrMinesweeperOrNot(Coordinate coordinate1) {
+        int row = coordinate1.getVertical() - 1;
 
         Coordinate coordinate = new Coordinate(0, 0);
-        while(row <= coord.getVertical() + 1) {
+        while(row <= coordinate1.getVertical() + 1) {
             if (row  >= 0 && row < field.length()) {
-                int col = coord.getHorizontal() - 1;
-                while (col <= coord.getHorizontal() + 1) {
+                int col = coordinate1.getHorizontal() - 1;
+                while (col <= coordinate1.getHorizontal() + 1) {
                     if (col  >= 0 && col < field.length()) {
                         coordinate.setVertical(row); coordinate.setHorizontal(col);
                         if (field.getCellStatus(coordinate) == Cell.Status.SHIP || field.getCellStatus(coordinate) == Cell.Status.MINE || field.getCellStatus(coordinate) == Cell.Status.MINESWEEPER || field.getCellStatus(coordinate) == Cell.Status.SUBMARINE) return false;
@@ -167,12 +167,6 @@ public class Player {
 
     public PlayingField getField() {
         return field;
-    }
-
-    public void setField(Cell[][] field) {
-        PlayingField newField = new PlayingField();
-        newField.setField(field);
-        this.field = newField;
     }
 
     public List<Ship> getShips() {
@@ -198,16 +192,12 @@ public class Player {
         return opponentShipCells;
     }
 
-    public void setOpponentShipCells(Coordinate coord) {
-        opponentShipCells.push(coord);
+    public void setOpponentShipCells(Coordinate coordinate) {
+        opponentShipCells.push(coordinate);
     }
 
     public List<AdditionalArrangements> getMines() {
         return mines;
-    }
-
-    public void setMines(List<AdditionalArrangements> mines) {
-        this.mines = mines;
     }
 
     public void setMines(AdditionalArrangements mines) {
@@ -238,20 +228,8 @@ public class Player {
         return opponentMines;
     }
 
-    public void setOpponentMines(List<AdditionalArrangements> opponentMines) {
-        this.opponentMines = opponentMines;
-    }
-
     public List<AdditionalArrangements> getSubmarineList() {
         return submarines;
-    }
-
-    public AdditionalArrangements getSubmarines() {
-        return submarines.get(0);
-    }
-
-    public void setSubmarineList(List<AdditionalArrangements> submarines) {
-        this.submarines = submarines;
     }
 
     public void setSubmarines(AdditionalArrangements submarines) {

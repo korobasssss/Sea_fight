@@ -1,8 +1,8 @@
 package cs.vsu.ru.Korobeynikova_A_V.field;
 
 public class Coordinate {
-    int vertical;
-    int horizontal;
+    private int vertical;
+    private int horizontal;
 
     public Coordinate(int vertical, int horizontal) {
         this.vertical = vertical;

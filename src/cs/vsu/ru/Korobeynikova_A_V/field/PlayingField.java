@@ -1,8 +1,8 @@
 package cs.vsu.ru.Korobeynikova_A_V.field;
 
 public class PlayingField {
-    public static int size = 10;
-    Cell[][] field = fillCell(new Cell[size][size]);
+    private static final int size = 10;
+    private Cell[][] field = fillCell(new Cell[size][size]);
 
 
     private Cell[][] fillCell(Cell[][] fieldFill) {
@@ -32,7 +32,7 @@ public class PlayingField {
     }
 
     public Cell.Status getCellStatus(Coordinate coordinate) {
-        return field[coordinate.getVertical()][coordinate.getHorizontal()].status;
+        return field[coordinate.getVertical()][coordinate.getHorizontal()].getStatus();
     }
 
     public int length() {
@@ -45,5 +45,9 @@ public class PlayingField {
 
     public void setField(Cell[][] field) {
         this.field = field;
+    }
+
+    public static int getSize() {
+        return size;
     }
 }

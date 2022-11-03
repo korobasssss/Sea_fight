@@ -4,10 +4,10 @@ import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
 public class Ship {
 
-    Coordinate startingPosition;
-    int shipType;
-    Orientation orientation;
-    Status status;
+    private Coordinate startingPosition;
+    private int shipType;
+    private Orientation orientation;
+    private Status status;
 
     public enum Orientation {
         VERTICAL,

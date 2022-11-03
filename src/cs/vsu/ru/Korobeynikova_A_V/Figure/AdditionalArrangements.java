@@ -4,8 +4,8 @@ package cs.vsu.ru.Korobeynikova_A_V.Figure;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
 public class AdditionalArrangements {
-    Coordinate position;
-    Status status;
+    private Coordinate position;
+    private Status status;
 
     public enum Status {
         ACTIVATED,

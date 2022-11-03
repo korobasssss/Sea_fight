@@ -15,13 +15,13 @@ public class Console{
         System.out.println("По горизонтали: ");
         scanner.nextLine();
         int col = changeToInt(scanner.nextLine());
-        while (col < 0 || col > PlayingField.size) {
+        while (col < 0 || col > PlayingField.getSize()) {
             System.out.println("Вы ввели неверную цифру. По горизонтали: ");
             col = changeToInt(scanner.nextLine());
         }
         System.out.println("По вертикали: ");
         int row = scanner.nextInt();
-        while (row < 0 || row > PlayingField.size) {
+        while (row < 0 || row > PlayingField.getSize()) {
             System.out.println("Вы ввели неверную цифру. По вертикали: ");
             row = scanner.nextInt();
         }
@@ -117,12 +117,12 @@ public class Console{
                 System.out.println();
                 ship.setStartingPosition(getCoordinates());
                 if (ship.getOrientation() == Ship.Orientation.VERTICAL){
-                    while ((ship.getStartingPosition().getVertical() + ship.getShipType()) - 1 >= PlayingField.size) {
+                    while ((ship.getStartingPosition().getVertical() + ship.getShipType()) - 1 >= PlayingField.getSize()) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
                 } else {
-                    while ((ship.getStartingPosition().getHorizontal() + ship.getShipType()) - 1 > PlayingField.size) {
+                    while ((ship.getStartingPosition().getHorizontal() + ship.getShipType()) - 1 > PlayingField.getSize()) {
                         System.out.println("Невозможно поставить здесь корабль. Введите координаты заного. ");
                         ship.setStartingPosition(getCoordinates());
                     }
@@ -141,9 +141,9 @@ public class Console{
         }
     }
 
-    private boolean cellIsOpponentMine(List<AdditionalArrangements> oppMine, Coordinate coord) {
+    private boolean cellIsOpponentMine(List<AdditionalArrangements> oppMine, Coordinate coordinate) {
         for (AdditionalArrangements mine : oppMine) {
-            if (mine.getPosition() == coord) return true;
+            if (mine.getPosition() == coordinate) return true;
         }
         return false;
     }
@@ -215,12 +215,12 @@ public class Console{
                 opponent.setCellStatus(coordinate, Cell.Status.MARKED);
 
                 System.out.println("Вы попали на мину ! :( Введите координаты клетки одного из своих кораблей! ");
-                Coordinate coord = getCoordinates();
-                while (player.getField().getCellStatus(coord) != Cell.Status.SHIP) {
+                Coordinate coordinates = getCoordinates();
+                while (player.getField().getCellStatus(coordinates) != Cell.Status.SHIP) {
                     System.out.println("Не обманывайте, там у вас нет корабля, введите координаты заново! ");
-                    coord = getCoordinates();
+                    coordinates = getCoordinates();
                 }
-                playerAttacked.setOpponentShipCells(coord);
+                playerAttacked.setOpponentShipCells(coordinates);
             }
             case MINESWEEPER -> {
                 for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
@@ -232,12 +232,12 @@ public class Console{
                 opponent.setCellStatus(coordinate, Cell.Status.MARKED);
 
                 System.out.println("Вы попали на минного тральщика ! :( Введите координаты клетки одной из своих мин! ");
-                Coordinate coord = getCoordinates();
-                while (player.getField().getCellStatus(coord) != Cell.Status.MINE) {
+                Coordinate coordinates = getCoordinates();
+                while (player.getField().getCellStatus(coordinates) != Cell.Status.MINE) {
                     System.out.println("Не обманывайте, там у вас нет мины, введите координаты заново! ");
-                    coord = getCoordinates();
+                    coordinates = getCoordinates();
                 }
-                playerAttacked.setOpponentShipCells(coord);
+                playerAttacked.setOpponentShipCells(coordinates);
             }
             case SUBMARINE -> {
                 playerAttacked.getSubmarineList().get(0).setStatus(AdditionalArrangements.Status.ACTIVATED);
@@ -252,11 +252,11 @@ public class Console{
     }
 
     public void finish(Player player1, Player player2) {
-        if (!shipsLifeStatus(player2.ships)) System.out.println("Победил игрок 1");
-        else if (!shipsLifeStatus(player1.ships)) System.out.println("Победил игрок 2");
+        if (!shipsLifeStatus(player2.getShips())) System.out.println("Победил игрок 1");
+        else if (!shipsLifeStatus(player1.getShips())) System.out.println("Победил игрок 2");
     }
 
-    private boolean shipsLifeStatus(List<Ship> ships) {
+    public boolean shipsLifeStatus(List<Ship> ships) {
         for (Ship ship : ships) {
             if (ship.getStatus() == Ship.Status.ALIVE) return true;
         }
@@ -268,7 +268,7 @@ public class Console{
         System.out.println();
         for (Cell[] cells : arr) {
             for (int col = 0; col < arr.length; col++) {
-                System.out.print(cells[col].visual);
+                System.out.print(cells[col].getVisual());
             }
             System.out.println();
         }
