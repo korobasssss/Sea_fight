@@ -52,7 +52,7 @@ public class Console{
     }
 
     private void makeMines(Player player) {
-        for (int i = 0; i < player.countMines; i++) {
+        for (int i = 0; i < player.getCountMines(); i++) {
             System.out.println("Введите координаты минного поля: ");
             AdditionalArrangements mine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setMines(mine);
@@ -67,7 +67,7 @@ public class Console{
     }
 
     private void makeMineSweepers(Player player) {
-        for (int i = 0; i < player.countMinesweepers; i++) {
+        for (int i = 0; i < player.getCountMinesweepers(); i++) {
             System.out.println("Введите координаты минного тральщика: ");
             AdditionalArrangements minesweeper = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setMinesweepers(minesweeper);
@@ -82,7 +82,7 @@ public class Console{
     }
 
     private void makeSubmarines(Player player) {
-        for (int i = 0; i < player.countSubmarines; i++) {
+        for (int i = 0; i < player.getCountSubmarines(); i++) {
             System.out.println("Введите координаты подлодки: ");
             AdditionalArrangements submarine = new AdditionalArrangements(getCoordinates(), AdditionalArrangements.Status.NOT_ACTIVATED);
             player.setSubmarines(submarine);
@@ -102,7 +102,7 @@ public class Console{
         int shipCellsCount = 1;
         while (shipCells > 0) {
             for (int ships = shipCellsCount; ships > 0; ships--) {
-                Ship ship = new Ship(new Coordinate(0, 0), 0,Ship.Orientation.VERTICAL);
+                Ship ship = new Ship(new Coordinate(0, 0), 0, Ship.Orientation.VERTICAL, Ship.Status.ALIVE);
                 ship.setShipType(shipCells);
                 System.out.printf("%d клеточный корабль вертикальный(0) или горизонтальный(1)? ", shipCells);
                 int orientation = scanner.nextInt();
@@ -194,12 +194,10 @@ public class Console{
 
                 if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(coordinate.getVertical(), coordinate.getHorizontal()))) {
                     System.out.printf("Игрок %d ранил корабль другого игрока", who);
-                    System.out.println();
                 } else {
                     System.out.printf("Игрок %d убил корабль другого игрока", who);
-                    System.out.println();
-                    playerAttacked.countShips--;
                 }
+                System.out.println();
             }
             case EMPTY -> {
                 System.out.println("Мимо.");
@@ -254,8 +252,15 @@ public class Console{
     }
 
     public void finish(Player player1, Player player2) {
-        if (player1.getCountShips() > player2.getCountShips()) System.out.println("Победил игрок 1");
-        else System.out.println("Победил игрок 2");
+        if (!shipsLifeStatus(player2.ships)) System.out.println("Победил игрок 1");
+        else if (!shipsLifeStatus(player1.ships)) System.out.println("Победил игрок 2");
+    }
+
+    private boolean shipsLifeStatus(List<Ship> ships) {
+        for (Ship ship : ships) {
+            if (ship.getStatus() == Ship.Status.ALIVE) return true;
+        }
+        return false;
     }
 
 

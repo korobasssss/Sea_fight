@@ -20,7 +20,6 @@ public class Player {
     Stack<Coordinate> opponentShipCells;
     List<AdditionalArrangements> opponentMines;
     Stack<Coordinate> shotFromASubmarine;
-    int countShips = 10;
     final int countMines = 2;
     final int countMinesweepers = 1;
     final int countSubmarines = 1;
@@ -68,6 +67,7 @@ public class Player {
                 coordinate.setVertical(row);
                 if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
+            ship.setStatus(Ship.Status.KILLED);
             return true; //убил
         } else if (ship.getOrientation() == Ship.Orientation.HORIZONTAL) {
             Coordinate coordinate = new Coordinate(ship.getStartingPosition().getVertical(), 0);
@@ -96,7 +96,7 @@ public class Player {
                 }
             }
         }
-        return new Ship(new Coordinate(0, 0), 0, Ship.Orientation.VERTICAL);
+        return new Ship(new Coordinate(0, 0), 0, Ship.Orientation.VERTICAL, Ship.Status.KILLED);
     }
 
     public boolean canMakeShipOrNot(Ship ship) {
@@ -216,10 +216,6 @@ public class Player {
 
     public int getCountMines() {
         return countMines;
-    }
-
-    public int getCountShips() {
-        return countShips;
     }
 
     public PlayingField getOpponentsField() {

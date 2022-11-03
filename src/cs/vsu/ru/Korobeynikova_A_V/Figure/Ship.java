@@ -7,16 +7,23 @@ public class Ship {
     Coordinate startingPosition;
     int shipType;
     Orientation orientation;
+    Status status;
 
     public enum Orientation {
         VERTICAL,
         HORIZONTAL
+    } // todo слелать енум статуса жизни, и чтобы не считать кол-во кораблей, просто проходится по их жизни
+
+    public enum Status {
+        ALIVE,
+        KILLED
     }
 
-    public Ship(Coordinate startingPosition, int shipType, Orientation orientation) {
+    public Ship(Coordinate startingPosition, int shipType, Orientation orientation, Status status) {
         this.startingPosition = startingPosition;
         this.shipType = shipType;
         this.orientation = orientation;
+        this.status = status;
     }
 
     public Coordinate getStartingPosition() {
@@ -41,5 +48,13 @@ public class Ship {
 
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
