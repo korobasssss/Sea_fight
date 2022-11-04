@@ -39,10 +39,9 @@ public class Player {
         this.shotFromASubmarine = new Stack<>();
     }
 
-    public void makeSheep(Ship ship) {
+    private void makeSheep(Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) makeVerticalShip(ship);
         else makeHorizontalShip(ship);
-        this.ships.add(ship);
     }
 
     private void makeVerticalShip(Ship ship) {
@@ -61,10 +60,6 @@ public class Player {
         }
     }
 
-    public void makeMine(AdditionalArrangements additionalArrangements) {
-
-    }
-
     public boolean hurtOrKill(PlayingField opponentsField, Ship ship) {
         if (ship.getOrientation() == Ship.Orientation.VERTICAL) {
             Coordinate coordinate = new Coordinate(0, ship.getStartingPosition().getHorizontal());
@@ -80,6 +75,7 @@ public class Player {
                 coordinate.setHorizontal(col);
                 if (opponentsField.getCellStatus(coordinate) == Cell.Status.SHIP) return false; //ранил
             }
+            ship.setStatus(Ship.Status.KILLED);
             return true; //убил
         }
         return false;
@@ -185,6 +181,11 @@ public class Player {
         }
     }
 
+    public void setShip(Ship ship) {
+        this.ships.add(ship);
+        makeSheep(ship);
+    }
+
     public Coordinate getOpponentShipCell() {
         return opponentShipCells.pop();
     }
@@ -206,6 +207,13 @@ public class Player {
         field.setCellStatus(mine.getPosition(), Cell.Status.MINE);
     }
 
+    public void setMines(List<AdditionalArrangements> mines) {
+        this.mines = mines;
+        for (AdditionalArrangements mine : mines) {
+            field.setCellStatus(mine.getPosition(), Cell.Status.MINE);
+        }
+    }
+
     public int getCountMines() {
         return countMines;
     }
@@ -223,12 +231,23 @@ public class Player {
         field.setCellStatus(minesweeper.getPosition(), Cell.Status.MINESWEEPER);
     }
 
+    public void setMinesweepers(List<AdditionalArrangements> minesweepers) {
+        this.minesweepers = minesweepers;
+        for (AdditionalArrangements minesweeper : minesweepers) {
+            field.setCellStatus(minesweeper.getPosition(), Cell.Status.MINESWEEPER);
+        }
+    }
+
     public int getCountMinesweepers() {
         return countMinesweepers;
     }
 
     public List<AdditionalArrangements> getOpponentMines() {
         return opponentMines;
+    }
+
+    public void setOpponentMines(AdditionalArrangements additionalArrangements) {
+        opponentMines.add(additionalArrangements);
     }
 
     public List<AdditionalArrangements> getSubmarineList() {
@@ -238,6 +257,13 @@ public class Player {
     public void setSubmarines(AdditionalArrangements submarine) {
         this.submarines.add(submarine);
         field.setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
+    }
+
+    public void setSubmarines(List<AdditionalArrangements> submarines) {
+        this.submarines = submarines;
+        for (AdditionalArrangements submarine : submarines) {
+            field.setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
+        }
     }
 
     public int getCountSubmarines() {

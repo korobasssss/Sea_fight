@@ -40,15 +40,15 @@ public class Console{
 
         if (decision == 0) {
             System.out.println("Случайная расстановка кораблей: ");
-            player.setShips(RandomPlacements.getRandomField());
+            RandomPlacements.getRandomField(player);
             print(player.getField().getField());
 
         } else {
             makeShips(player);
+            makeMines(player);
+            makeMineSweepers(player);
+            makeSubmarines(player);
         }
-        makeMines(player);
-        makeMineSweepers(player);
-        makeSubmarines(player);
     }
 
     private void makeMines(Player player) {
@@ -124,7 +124,7 @@ public class Console{
                     System.out.println("Корабль расположен близко к другим, мы не можем его тут поставить, выберите другое местоположение.");
                     ship.setStartingPosition(getCoordinates());
                 }
-                player.makeSheep(ship);
+                player.setShip(ship);
 
                 print(player.getField().getField());
             }
@@ -134,7 +134,7 @@ public class Console{
 
     private boolean cellIsOpponentMine(List<AdditionalArrangements> oppMine, Coordinate coordinate) {
         for (AdditionalArrangements mine : oppMine) {
-            if (mine.getPosition() == coordinate) return true;
+            if (mine.getPosition().equals(coordinate)) return true;
         }
         return false;
     }
@@ -143,7 +143,7 @@ public class Console{
         Cell.Status cellStatus = Cell.Status.UNKNOWN;
 
         Coordinate point;
-        while (cellStatus == Cell.Status.UNKNOWN || cellStatus == Cell.Status.SHIP) {
+        while ((cellStatus == Cell.Status.UNKNOWN || cellStatus == Cell.Status.SHIP) && (shipsLifeStatus(player.getShips()) && shipsLifeStatus(playerAttacked.getShips()))) {
             System.out.printf("Игрок %d делайте ход.", who);
             System.out.println();
 
@@ -198,7 +198,7 @@ public class Console{
             case MARKED -> System.out.println("Эта зона уже поражена.");
             case MINE -> {
                 for (int i = 0; i < playerAttacked.getMines().size(); i++) {
-                    if (playerAttacked.getMines().get(i).getPosition().getVertical() == coordinate.getVertical() && playerAttacked.getMines().get(i).getPosition().getHorizontal() == coordinate.getHorizontal()) {
+                    if (playerAttacked.getMines().get(i).getPosition().equals(coordinate)) {
                         playerAttacked.getMines().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
                     }
                 }
@@ -215,7 +215,7 @@ public class Console{
             }
             case MINESWEEPER -> {
                 for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
-                    if (playerAttacked.getMinesweepers().get(i).getPosition() == coordinate) {
+                    if (playerAttacked.getMinesweepers().get(i).getPosition().equals(coordinate)) {
                         playerAttacked.getMinesweepers().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
                     }
                 }
@@ -228,7 +228,10 @@ public class Console{
                     System.out.println("Не обманывайте, там у вас нет мины, введите координаты заново! ");
                     coordinates = getCoordinates();
                 }
-                playerAttacked.setOpponentShipCells(coordinates);
+                for (AdditionalArrangements mine : player.getMines()) {
+                    if (mine.getPosition().equals(coordinates)) playerAttacked.setOpponentMines(mine);
+                }
+
             }
             case SUBMARINE -> {
                 playerAttacked.getSubmarineList().get(0).setStatus(AdditionalArrangements.Status.ACTIVATED);
