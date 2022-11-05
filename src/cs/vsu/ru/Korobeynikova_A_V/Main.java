@@ -1,12 +1,18 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
 
+import cs.vsu.ru.Korobeynikova_A_V.ui.ConsoleUI;
+import cs.vsu.ru.Korobeynikova_A_V.ui.GameUI;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Добро пожаловать в игру Морской бой. Хорошей вам игры!!!");
+        GameUI gameUI = new ConsoleUI();
 
         Game game = new Game();
-        game.game();
+        game.game(gameUI);
+
+//        MainWindow mainWindow = new MainWindow("Морской бой");
+//        mainWindow.setVisible(true);
     }
 }

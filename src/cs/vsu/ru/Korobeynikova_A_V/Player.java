@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Player {
+    private final String name; // todo потом везде добавить
     private PlayingField field;
     private PlayingField opponentsField;
     private List<Ship> ships;
@@ -24,10 +25,10 @@ public class Player {
     private final int countMinesweepers = 1;
     private final int countSubmarines = 1;
 
-
-    public Player(PlayingField field, List<Ship> ships, PlayingField opponentsField) {
+    public Player(String name, PlayingField field, List<Ship> ships, PlayingField opponentsField) {
         opponentsField.unknownField();
 
+        this.name = name;
         this.field = field;
         this.ships = ships;
         this.mines = new ArrayList<>();
@@ -281,4 +282,9 @@ public class Player {
     public void setShotFromASubmarine(Coordinate shotFromASubmarine) {
         this.shotFromASubmarine.push(shotFromASubmarine);
     }
+
+    public String getName() {
+        return name;
+    }
+
 }
