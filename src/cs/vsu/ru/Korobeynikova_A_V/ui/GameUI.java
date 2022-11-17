@@ -45,5 +45,5 @@ public interface GameUI {
 
     void messageOfFinish(String name);
 
-    void print(Cell[][] arr);
+    void print(Cell[][] arr, String who);
 }

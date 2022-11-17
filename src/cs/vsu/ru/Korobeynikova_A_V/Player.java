@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class Player {
-    private final String name; // todo потом везде добавить
+    private final String number;
+    private final String name;
     private PlayingField field;
     private PlayingField opponentsField;
     private List<Ship> ships;
@@ -25,9 +26,10 @@ public class Player {
     private final int countMinesweepers = 1;
     private final int countSubmarines = 1;
 
-    public Player(String name, PlayingField field, List<Ship> ships, PlayingField opponentsField) {
+    public Player(String number, String name, PlayingField field, List<Ship> ships, PlayingField opponentsField) {
         opponentsField.unknownField();
 
+        this.number = number;
         this.name = name;
         this.field = field;
         this.ships = ships;
@@ -287,4 +289,7 @@ public class Player {
         return name;
     }
 
+    public String getNumber() {
+        return number;
+    }
 }

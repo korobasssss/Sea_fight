@@ -37,16 +37,16 @@ public class Game {
         if (decision.equals("0")) {
             gameUI.messageOfRandomPlacementFigures(player.getName());
             RandomPlacements.getRandomField(player);
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
 
         } else {
             makeShips(player, gameUI);
             player.setMines(makeAddMineOrMinesweeper(player, player.getCountMines(), gameUI ));
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
             player.setMinesweepers(makeAddMineOrMinesweeper(player, player.getCountMinesweepers(), gameUI));
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
             player.setSubmarines(makeSubmarines(player, player.getCountSubmarines(), gameUI));
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
         }
     }
 
@@ -75,7 +75,7 @@ public class Game {
                 submarine.setPosition(gameUI.getCoordinates(player.getName()));
             }
             list.add(submarine);
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
         }
         return list;
     }
@@ -120,7 +120,7 @@ public class Game {
                 }
                 player.setShip(ship);
 
-                gameUI.print(player.getField().getField());
+                gameUI.print(player.getField().getField(), player.getNumber());
             }
             shipCellsCount--;
         }
@@ -165,10 +165,10 @@ public class Game {
             statusAttacks(who, cellStatus, point, player, playerAttacked, gameUI);
 
             gameUI.messageOfWhoseField(playerAttacked.getName());
-            gameUI.print(player.getOpponentsField().getField());
+            gameUI.print(player.getOpponentsField().getField(), playerAttacked.getNumber() + ".1");
 
             gameUI.messageOfWhoseField(player.getName());
-            gameUI.print(player.getField().getField());
+            gameUI.print(player.getField().getField(), player.getNumber());
         }
     }
 
@@ -252,8 +252,8 @@ public class Game {
     }
 
     public void game(GameUI gameUI) {
-        Player player1 = new Player(gameUI.setYourName("1"), new PlayingField(), new ArrayList<>(), new PlayingField());
-        Player player2 = new Player(gameUI.setYourName("2"), new PlayingField(), new ArrayList<>(), new PlayingField());
+        Player player1 = new Player("1", gameUI.setYourName("1"), new PlayingField(), new ArrayList<>(), new PlayingField());
+        Player player2 = new Player("2", gameUI.setYourName("2"), new PlayingField(), new ArrayList<>(), new PlayingField());
 
         // расставляем фигуры на оба поля
         placementOfFigures(player1, gameUI);

@@ -5,7 +5,7 @@ public class PlayingField {
     private Cell[][] field = fillCell(new Cell[size][size]);
 
 
-    private Cell[][] fillCell(Cell[][] fieldFill) {
+    public static Cell[][] fillCell(Cell[][] fieldFill) {
 
         for (int row = 0; row < fieldFill.length; row++) {
             for (int col = 0; col < fieldFill[0].length; col++) {

@@ -49,7 +49,7 @@ public class ConsoleUI implements GameUI{
             System.out.println("По вертикали: ");
             row = scanner.nextLine();
         }
-        System.out.println();
+        emptyLine();
 
         return new Coordinate(Integer.parseInt(row) - 1, intCol - 1);
     }
@@ -143,7 +143,6 @@ public class ConsoleUI implements GameUI{
 
     @Override
     public void messageOfWhoseField(String name) {
-        emptyLine();
         System.out.printf("Поле игрока %s", name);
     }
 
@@ -155,7 +154,7 @@ public class ConsoleUI implements GameUI{
 
 
     @Override
-    public void print(Cell[][] arr) {
+    public void print(Cell[][] arr, String who) {
         emptyLine();
         System.out.println();
         for (Cell[] cells : arr) {
