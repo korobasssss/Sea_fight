@@ -1,20 +1,18 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
-import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
-import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
-public class MessagesForUI{ // todo заполнить собщениями и добавить в уи, только они ничего не должны получать, все через formatted
+public class MessagesForUI{ // todo добавить в консоль уи и в гуи
 
     public String setYourName() {
-        return null;
+        return "Игрок %s, введите ваше имя";
     }
 
     public String messageOfPlayersReady() {
-        return null;
+        return "Оба игрока готовы к бою";
     }
 
     public String messageOfGetCoordinates() {
-        return null;
+        return "Игрок %s, введите координаты %s";
     }
 
     public String getCoordinates() {
@@ -22,67 +20,67 @@ public class MessagesForUI{ // todo заполнить собщениями и �
     }
 
     public String messageOfWrongNumberOrLetter() {
-        return null;
+        return "Игрок %s, ваш ввод неверный или расстановка невозможна";
     }
 
     public String messageWhereDidMove() {
-        return null;
+        return "Игрок %s походил по горизонтали на %s и по вертикали на %s";
     }
 
     public String decisionOfPlacementFigures() {
-        return null;
+        return "Игрок %s, вы хотите случайную расстановку(введите 0) или желаете самостоятельно расставить корабли(введите 1)? ";
     }
 
     public String messageOfRandomPlacementFigures() {
-        return null;
+        return "Игрок %s, ваша случайная расстановка кораблей: ";
     }
 
     public String decisionOfShipOrientation() {
-        return null;
+        return "Игрок %s, клеточный корабль вертикальный(введите 0) или горизонтальный(введите 1)?  ";
     }
 
     public String messageOfWhoseParty() {
-        return null;
+        return "Игрок %s, делайте ход. ";
     }
 
     public String decisionOfUsingOpponentsPartOfTheShip() {
-        return null;
+        return "Игрок %s, желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да)";
     }
 
     public String messageOfExistenceOpponentsMineOnThisCell() {
-        return null;
+        return "Игрок %s, вы знаете, что там стоит мина противника, выберите другую клетку:";
     }
 
     public String messageOfShipState() {
-        return null;
+        return "Игрок %s %s корабль другого игрока";
     }
 
     public String messageOfMarkedCell() {
-        return null;
+        return "Игрок %s, эта зона уже поражена";
     }
 
     public String messageOfEmptyCell() {
-        return null;
+        return "Игрок %s, вы попали мимо.";
     }
 
     public String messageOfEntryOfOpponentsMineOrMinesweeper() {
-        return null;
+        return "Игрок %s, вы попали на %s! :( Введите координаты клетки %s";
     }
 
     public String messageThatYouAreALiar() {
-        return null;
+        return "Игрок %ы, не обманывайте, там у вас нет %s, введите координаты заново!";
     }
 
     public String messageOfEntryOfSubmarine() {
-        return null;
+        return "Игрок %s, вы попали в подводную лодку ! Ожидайте выстрела на ваше поле!";
     }
 
     public String messageOfWhoseField() {
-        return null;
+        return "Поле игрока %s: ";
     }
 
     public String messageOfFinish() {
-        return null;
+        return "Игрок %s выиграл!!!!!!";
     }
 
     public String print() {
