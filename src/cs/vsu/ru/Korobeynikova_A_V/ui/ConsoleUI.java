@@ -9,24 +9,25 @@ import java.util.Scanner;
 public class ConsoleUI implements GameUI{
 
     Scanner scanner = new Scanner(System.in);
+    MessagesForUI messagesForUI = new MessagesForUI();
 
     @Override
     public String setYourName(String who) {
         emptyLine();
-        System.out.printf("Игрок %s, введите ваше имя : ", who);
+        System.out.print(messagesForUI.setYourName().formatted(who));
         return scanner.nextLine();
     }
 
     @Override
     public void messageOfPlayersReady() {
         emptyLine();
-        System.out.println("Оба игрока готовы к бою");
+        System.out.print(messagesForUI.messageOfPlayersReady());
     }
 
     @Override
     public void messageOfGetCoordinates(String name, String whatPlacement) {
         emptyLine();
-        System.out.printf("Игрок %s, введите координаты %s: ", name, whatPlacement);
+        System.out.print(messagesForUI.messageOfGetCoordinates().formatted(name, whatPlacement));
     }
 
     @Override
@@ -46,7 +47,6 @@ public class ConsoleUI implements GameUI{
         while (!isNumeric(row) || (isNumeric(row) && (Integer.parseInt(row) < 0 || Integer.parseInt(row) > PlayingField.getSize()))) {
             messageOfWrongNumberOrLetter(name);
             emptyLine();
-            System.out.println("По вертикали: ");
             row = scanner.nextLine();
         }
         emptyLine();
@@ -57,99 +57,99 @@ public class ConsoleUI implements GameUI{
     @Override
     public void messageOfWrongNumberOrLetter(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, Ваш ввод неверный или расстановка невозможна", name);
+        System.out.print(messagesForUI.messageOfWrongNumberOrLetter().formatted(name));
     }
 
     @Override
     public void messageWhereDidMove(String name, Coordinate coordinate) {
         emptyLine();
-        System.out.printf("Игрок %s походил по горизонтали на %d и по вертикали на %d.", name, coordinate.getHorizontal() + 1, coordinate.getVertical() + 1);
+        System.out.print(messagesForUI.messageWhereDidMove().formatted(name, coordinate.getHorizontal() + 1, coordinate.getVertical() + 1));
     }
 
     @Override
     public String decisionOfPlacementFigures(String name) {
         emptyLine();
-        System.out.printf("Игрок %s , Вы хотите случайную расстановку(0) или желаете самостоятельно расставить корабли(1)? ", name);
+        System.out.print(messagesForUI.decisionOfPlacementFigures().formatted(name));
         return scanner.nextLine();
     }
 
     @Override
     public void messageOfRandomPlacementFigures(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, ваша случайная расстановка кораблей: ", name);
+        System.out.print(messagesForUI.messageOfRandomPlacementFigures().formatted(name));
     }
 
     @Override
     public String decisionOfShipOrientation(String name, String type) {
         emptyLine();
-        System.out.printf("Игрок %s, %s клеточный корабль вертикальный(0) или горизонтальный(1)? ", name, type);
+        System.out.print(messagesForUI.decisionOfShipOrientation().formatted(name, type));
         return scanner.nextLine();
     }
 
     @Override
     public void messageOfWhoseParty(String name) {
         emptyLine();
-        System.out.printf("Игрок %s делайте ход.", name);
+        System.out.print(messagesForUI.messageOfWhoseParty().formatted(name));
     }
 
     @Override
     public String decisionOfUsingOpponentsPartOfTheShip(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да", name);
+        System.out.print(messagesForUI.decisionOfUsingOpponentsPartOfTheShip().formatted(name));
         return scanner.nextLine();
     }
 
     @Override
     public void messageOfExistenceOpponentsMineOnThisCell(String name) {
         emptyLine();
-        System.out.println("Вы знаете, что там стоит мина противника, выберите другую клетку: ");
+        System.out.println(messagesForUI.messageOfExistenceOpponentsMineOnThisCell());
     }
 
     @Override
     public void messageOfShipState(String name, String whatIsLocated) {
         emptyLine();
-        System.out.printf("Игрок %s %s корабль другого игрока", name, whatIsLocated);
+        System.out.print(messagesForUI.messageOfShipState().formatted(name, whatIsLocated));
     }
 
     @Override
     public void messageOfMarkedCell(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, эта зона уже поражена.", name);
+        System.out.print(messagesForUI.messageOfMarkedCell().formatted(name));
     }
 
     @Override
     public void messageOfEmptyCell(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, вы попали мимо.", name);
+        System.out.print(messagesForUI.messageOfEmptyCell());
     }
 
     @Override
     public void messageOfEntryOfOpponentsMineOrMinesweeper(String name, String what, String what2) {
         emptyLine();
-        System.out.printf("Игрок %s, вы попали на %s ! :( Введите координаты клетки %s! ", name, what, what2);
+        System.out.print(messagesForUI.messageOfEntryOfOpponentsMineOrMinesweeper().formatted(name, what, what2));
     }
 
     @Override
     public void messageThatYouAreALiar(String name, String what) {
         emptyLine();
-        System.out.printf("Игрок %s, не обманывайте, там у вас нет %s, введите координаты заново! ", name, what);
+        System.out.print(messagesForUI.messageThatYouAreALiar().formatted(name, what));
     }
 
     @Override
     public void messageOfEntryOfSubmarine(String name) {
         emptyLine();
-        System.out.printf("Игрок %s, вы попали в подводную лодку ! Ожидайте выстрела на ваше поле! ", name);
+        System.out.print(messagesForUI.messageOfEntryOfSubmarine().formatted(name));
     }
 
     @Override
     public void messageOfWhoseField(String name) {
-        System.out.printf("Поле игрока %s", name);
+        System.out.print(messagesForUI.messageOfWhoseField().formatted(name));
     }
 
     @Override
     public void messageOfFinish(String name) {
         emptyLine();
-        System.out.printf("Победил игрок %s", name);
+        System.out.print(messagesForUI.messageOfFinish().formatted(name));
     }
 
 
