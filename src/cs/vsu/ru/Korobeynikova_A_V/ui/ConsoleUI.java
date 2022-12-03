@@ -1,5 +1,7 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
+import cs.vsu.ru.Korobeynikova_A_V.LocalGame;
+import cs.vsu.ru.Korobeynikova_A_V.Player;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
@@ -12,7 +14,7 @@ public class ConsoleUI implements GameUI{
     MessagesForUI messagesForUI = new MessagesForUI();
 
     @Override
-    public String setYourName(String who) {
+    public String setYourName(LocalGame.Who who) {
         emptyLine();
         System.out.print(messagesForUI.setYourName().formatted(who));
         return scanner.nextLine();
@@ -31,13 +33,13 @@ public class ConsoleUI implements GameUI{
     }
 
     @Override
-    public Coordinate getCoordinates(String name) {
+    public Coordinate getCoordinates(Player player) {
         emptyLine();
         System.out.println("По горизонтали: ");
         String col = scanner.nextLine();
         int intCol = changeToInt(col);
         while (intCol < 0 || intCol > PlayingField.getSize()) {
-            messageOfWrongNumberOrLetter(name);
+            messageOfWrongNumberOrLetter(player.getName());
             emptyLine();
             col = scanner.nextLine();
             intCol = changeToInt(col);
@@ -45,7 +47,7 @@ public class ConsoleUI implements GameUI{
         System.out.println("По вертикали: ");
         String row = scanner.nextLine();
         while (!isNumeric(row) || (isNumeric(row) && (Integer.parseInt(row) < 0 || Integer.parseInt(row) > PlayingField.getSize()))) {
-            messageOfWrongNumberOrLetter(name);
+            messageOfWrongNumberOrLetter(player.getName());
             emptyLine();
             row = scanner.nextLine();
         }
@@ -120,7 +122,7 @@ public class ConsoleUI implements GameUI{
     @Override
     public void messageOfEmptyCell(String name) {
         emptyLine();
-        System.out.print(messagesForUI.messageOfEmptyCell());
+        System.out.print(messagesForUI.messageOfEmptyCell().formatted(name));
     }
 
     @Override
@@ -154,15 +156,25 @@ public class ConsoleUI implements GameUI{
 
 
     @Override
-    public void print(Cell[][] arr, String who) {
+    public void print(Player player, LocalGame.Who who) {
         emptyLine();
         System.out.println();
-        for (Cell[] cells : arr) {
-            for (int col = 0; col < arr.length; col++) {
-                System.out.print(cells[col].getVisual());
+        if (who == LocalGame.Who.FIRST_OPP || who == LocalGame.Who.SECOND_OPP) {
+            for (Cell[] cells : player.getField().getField()) {
+                for (int col = 0; col < player.getField().getField().length; col++) {
+                    System.out.print(cells[col].getVisual());
+                }
+                System.out.println();
             }
-            System.out.println();
+        } else {
+            for (Cell[] cells : player.getOpponentsField().getField()) {
+                for (int col = 0; col < player.getOpponentsField().getField().length; col++) {
+                    System.out.print(cells[col].getVisual());
+                }
+                System.out.println();
+            }
         }
+
         System.out.println();
     }
 

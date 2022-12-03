@@ -11,25 +11,25 @@ import java.util.List;
 import java.util.Stack;
 
 public class Player {
-    private final String number;
+    private final LocalGame.Who number;
+    private final LocalGame.Who oppNumber;
+
     private final String name;
-    private PlayingField field;
-    private PlayingField opponentsField;
+    private final PlayingField field;
+    private final PlayingField opponentsField;
     private List<Ship> ships;
     private List<AdditionalArrangements> mines;
     private List<AdditionalArrangements> minesweepers;
     private List<AdditionalArrangements> submarines;
-    private Stack<Coordinate> opponentShipCells;
-    private List<AdditionalArrangements> opponentMines;
-    private Stack<Coordinate> shotFromASubmarine;
-    private final int countMines = 2;
-    private final int countMinesweepers = 1;
-    private final int countSubmarines = 1;
+    private final Stack<Coordinate> opponentShipCells;
+    private final List<AdditionalArrangements> opponentMines;
+    private final Stack<Coordinate> shotFromASubmarine;
 
-    public Player(String number, String name, PlayingField field, List<Ship> ships, PlayingField opponentsField) {
+    public Player(LocalGame.Who number, LocalGame.Who oppNumber, String name, PlayingField field, List<Ship> ships, PlayingField opponentsField) {
         opponentsField.unknownField();
 
         this.number = number;
+        this.oppNumber = oppNumber;
         this.name = name;
         this.field = field;
         this.ships = ships;
@@ -205,11 +205,6 @@ public class Player {
         return mines;
     }
 
-    public void setMines(AdditionalArrangements mine) {
-        this.mines.add(mine);
-        field.setCellStatus(mine.getPosition(), Cell.Status.MINE);
-    }
-
     public void setMines(List<AdditionalArrangements> mines) {
         this.mines = mines;
         for (AdditionalArrangements mine : mines) {
@@ -218,7 +213,7 @@ public class Player {
     }
 
     public int getCountMines() {
-        return countMines;
+        return 2;
     }
 
     public PlayingField getOpponentsField() {
@@ -229,11 +224,6 @@ public class Player {
         return minesweepers;
     }
 
-    public void setMinesweepers(AdditionalArrangements minesweeper) {
-        this.minesweepers.add(minesweeper);
-        field.setCellStatus(minesweeper.getPosition(), Cell.Status.MINESWEEPER);
-    }
-
     public void setMinesweepers(List<AdditionalArrangements> minesweepers) {
         this.minesweepers = minesweepers;
         for (AdditionalArrangements minesweeper : minesweepers) {
@@ -242,7 +232,7 @@ public class Player {
     }
 
     public int getCountMinesweepers() {
-        return countMinesweepers;
+        return 1;
     }
 
     public List<AdditionalArrangements> getOpponentMines() {
@@ -257,11 +247,6 @@ public class Player {
         return submarines;
     }
 
-    public void setSubmarines(AdditionalArrangements submarine) {
-        this.submarines.add(submarine);
-        field.setCellStatus(submarine.getPosition(), Cell.Status.SUBMARINE);
-    }
-
     public void setSubmarines(List<AdditionalArrangements> submarines) {
         this.submarines = submarines;
         for (AdditionalArrangements submarine : submarines) {
@@ -270,7 +255,7 @@ public class Player {
     }
 
     public int getCountSubmarines() {
-        return countSubmarines;
+        return 1;
     }
 
     public Coordinate getShotFromASubmarine() {
@@ -289,7 +274,11 @@ public class Player {
         return name;
     }
 
-    public String getNumber() {
+    public LocalGame.Who getNumber() {
         return number;
+    }
+
+    public LocalGame.Who getOppNumber() {
+        return oppNumber;
     }
 }

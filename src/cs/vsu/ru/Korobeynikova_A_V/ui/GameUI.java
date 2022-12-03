@@ -1,17 +1,18 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
-import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
+import cs.vsu.ru.Korobeynikova_A_V.LocalGame;
+import cs.vsu.ru.Korobeynikova_A_V.Player;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
 public interface GameUI {
 
-    String setYourName(String who);
+    String setYourName(LocalGame.Who who);
 
     void messageOfPlayersReady();
 
     void messageOfGetCoordinates(String name, String whatPlacement);
 
-    Coordinate getCoordinates(String name);
+    Coordinate getCoordinates(Player player);
 
     void messageOfWrongNumberOrLetter(String name);
 
@@ -45,5 +46,5 @@ public interface GameUI {
 
     void messageOfFinish(String name);
 
-    void print(Cell[][] arr, String who);
+    void print(Player player, LocalGame.Who who);
 }

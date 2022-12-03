@@ -9,7 +9,7 @@ public class PlayingField {
 
         for (int row = 0; row < fieldFill.length; row++) {
             for (int col = 0; col < fieldFill[0].length; col++) {
-                Cell cell = new Cell(Cell.Status.EMPTY);
+                Cell cell = new Cell(Cell.Status.EMPTY, new Coordinate(row, col));
                 fieldFill[row][col] = cell;
             }
 
@@ -20,7 +20,7 @@ public class PlayingField {
     public void unknownField() {
         for (int row = 0; row < field.length; row++) {
             for (int col = 0; col < field[0].length; col++) {
-                Cell cell = new Cell(Cell.Status.UNKNOWN);
+                Cell cell = new Cell(Cell.Status.UNKNOWN, new Coordinate(row, col));
                 field[row][col] = cell;
             }
 
@@ -50,4 +50,6 @@ public class PlayingField {
     public static int getSize() {
         return size;
     }
+
+    public Cell getCell(int row, int col) { return field[row][col];}
 }

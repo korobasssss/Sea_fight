@@ -3,6 +3,7 @@ package cs.vsu.ru.Korobeynikova_A_V.field;
 public class Cell {
     private char visual;
     private Status status;
+    private Coordinate coordinate;
 
     public enum Status {
         SHIP,
@@ -14,7 +15,8 @@ public class Cell {
         SUBMARINE
     }
 
-    public Cell(Status status) {
+    public Cell(Status status, Coordinate coordinate) {
+        this.coordinate = coordinate;
         this.status = status;
         this.visual = setVisual(status);
     }
@@ -47,4 +49,7 @@ public class Cell {
         this.visual = setVisual(status);
     }
 
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
 }

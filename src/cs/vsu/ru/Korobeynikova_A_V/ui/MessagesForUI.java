@@ -1,10 +1,10 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
 
-public class MessagesForUI{ // todo добавить в консоль уи и в гуи
+public class MessagesForUI{ // todo https://docs.oracle.com/javase/tutorial/i18n/intro/after.html
 
     public String setYourName() {
-        return "Игрок %s, введите ваше имя";
+        return "Игрок %s, введите ваше имя: ";
     }
 
     public String messageOfPlayersReady() {
@@ -16,7 +16,7 @@ public class MessagesForUI{ // todo добавить в консоль уи и �
     }
 
     public String getCoordinates() {
-        return null;
+        return "Игрок %s, введите координаты";
     }
 
     public String messageOfWrongNumberOrLetter() {
@@ -68,7 +68,7 @@ public class MessagesForUI{ // todo добавить в консоль уи и �
     }
 
     public String messageThatYouAreALiar() {
-        return "Игрок %ы, не обманывайте, там у вас нет %s, введите координаты заново!";
+        return "Игрок %s, не обманывайте, там у вас нет %s, введите координаты заново!";
     }
 
     public String messageOfEntryOfSubmarine() {
