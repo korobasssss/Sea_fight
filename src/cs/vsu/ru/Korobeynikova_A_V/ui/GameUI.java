@@ -6,11 +6,9 @@ import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
 public interface GameUI {
 
-    String setYourName(LocalGame.Who who);
-
     void messageOfPlayersReady();
 
-    void messageOfGetCoordinates(String name, String whatPlacement);
+    void messageOfGetCoordinates(Player player);
 
     Coordinate getCoordinates(Player player);
 
@@ -26,7 +24,9 @@ public interface GameUI {
 
     void messageOfWhoseParty(String name);
 
-    String decisionOfUsingOpponentsPartOfTheShip(String name);
+    void messageOfNotYourParty(String name);
+
+    Integer decisionOfUsingOpponentsPartOfTheShip(String name);
 
     void messageOfExistenceOpponentsMineOnThisCell(String name);
 
@@ -46,5 +46,5 @@ public interface GameUI {
 
     void messageOfFinish(String name);
 
-    void print(Player player, LocalGame.Who who);
+    void print(Player player);
 }

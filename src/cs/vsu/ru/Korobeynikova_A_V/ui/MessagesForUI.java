@@ -43,6 +43,10 @@ public class MessagesForUI{ // todo https://docs.oracle.com/javase/tutorial/i18n
         return "Игрок %s, делайте ход. ";
     }
 
+    public String messageOfNotYourParty(){
+        return "Игрок %s, сейчас не ваш ход!";
+    }
+
     public String decisionOfUsingOpponentsPartOfTheShip() {
         return "Игрок %s, желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да)";
     }

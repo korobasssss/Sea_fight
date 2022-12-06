@@ -2,22 +2,22 @@ package cs.vsu.ru.Korobeynikova_A_V.Figure;
 
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 
-public class Ship {
+public class Ship implements Figure{
 
-    private Coordinate startingPosition;
+    private Coordinate position;
     private Type shipType;
     private Orientation orientation;
-    private Status status;
+    private Figure.Status status;
 
     public enum Orientation {
         VERTICAL,
         HORIZONTAL
     }
 
-    public enum Status {
-        ALIVE,
-        KILLED
-    }
+//    public enum Status {
+//        ALIVE,
+//        KILLED
+//    }
 
     public enum Type {
         ONE_CELL("1"),
@@ -34,19 +34,19 @@ public class Ship {
         public String getString() { return this.str;}
     }
 
-    public Ship(Coordinate startingPosition, Type shipType, Orientation orientation, Status status) {
-        this.startingPosition = startingPosition;
+    public Ship(Coordinate startingPosition, Type shipType, Orientation orientation, Figure.Status status) {
+        this.position = startingPosition;
         this.shipType = shipType;
         this.orientation = orientation;
         this.status = status;
     }
 
-    public Coordinate getStartingPosition() {
-        return startingPosition;
+    public Coordinate getPosition() {
+        return position;
     }
 
-    public void setStartingPosition(Coordinate startingPosition) {
-        this.startingPosition = startingPosition;
+    public void setPosition(Coordinate position) {
+        this.position = position;
     }
 
     public Type getShipType() {
@@ -65,11 +65,11 @@ public class Ship {
         this.orientation = orientation;
     }
 
-    public Status getStatus() {
+    public Figure.Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(Figure.Status status) {
         this.status = status;
     }
 }

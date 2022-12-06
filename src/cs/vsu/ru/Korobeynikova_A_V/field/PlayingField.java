@@ -31,6 +31,10 @@ public class PlayingField {
         field[coordinate.getVertical()][coordinate.getHorizontal()].setStatus(status);
     }
 
+    public void setCellStatus(int row, int col, Cell.Status status) {
+        field[row][col].setStatus(status);
+    }
+
     public Cell.Status getCellStatus(Coordinate coordinate) {
         return field[coordinate.getVertical()][coordinate.getHorizontal()].getStatus();
     }
@@ -52,4 +56,23 @@ public class PlayingField {
     }
 
     public Cell getCell(int row, int col) { return field[row][col];}
+
+
+    public int getCountMinesweepers() {
+        return 1;
+    }
+
+    public int getCountShips() { return 10; }
+
+    public int getCountMines() {
+        return 2;
+    }
+
+    public int getOneCellShip() { return 4; }
+
+    public int getTwoCellShip() { return 3; }
+
+    public int getThreeCellShip() { return 2; }
+
+    public int getFourCellShip() { return 1; }
 }

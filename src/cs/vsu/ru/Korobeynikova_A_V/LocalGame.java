@@ -1,35 +1,31 @@
 package cs.vsu.ru.Korobeynikova_A_V;
 
-import cs.vsu.ru.Korobeynikova_A_V.Figure.AdditionalArrangements;
+import cs.vsu.ru.Korobeynikova_A_V.Figure.Figure;
 import cs.vsu.ru.Korobeynikova_A_V.Figure.Ship;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
-import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 import cs.vsu.ru.Korobeynikova_A_V.field.RandomPlacements;
-import cs.vsu.ru.Korobeynikova_A_V.ui.ConsoleUI;
 import cs.vsu.ru.Korobeynikova_A_V.ui.GameUI;
 import cs.vsu.ru.Korobeynikova_A_V.ui.WindowUI.TableModel.GameUpdateListener;
 import cs.vsu.ru.Korobeynikova_A_V.ui.WindowUI.WindowUI;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocalGame implements Game {
     GameUI gameUI;
 
+    Player player1;
+    Player player2;
+
+    Boolean flagOfUsingOppCell = false;
+
     private final List<GameUpdateListener> listeners = new ArrayList<>();
 
-    public enum Who {
-        FIRST_PLAYER,
-        SECOND_PLAYER,
-        FIRST_OPP,
-        SECOND_OPP
-    }
-
-    Player player1 = new Player(Who.FIRST_PLAYER, Who.FIRST_OPP, "1", new PlayingField(), new ArrayList<>(), new PlayingField());
-    Player player2 = new Player(Who.SECOND_PLAYER, Who.SECOND_OPP, "2", new PlayingField(), new ArrayList<>(), new PlayingField());
-
-    public LocalGame(GameUI gameUI) {
+    public LocalGame(Player player1, Player player2, GameUI gameUI) {
+        this.player1 = player1;
+        this.player2 = player2;
         this.gameUI = gameUI;
     }
 
@@ -39,184 +35,108 @@ public class LocalGame implements Game {
     }
 
     @Override
-    public void attacks(Player player1, Player player2, GameUI gameUI) {
-        Who who = Who.FIRST_PLAYER;
-
-        while (shipsLifeStatus(player1.getShips()) && shipsLifeStatus(player2.getShips())) { // todo убрать цикл
-            if (who == Who.FIRST_PLAYER) {
-                moveOnTheOpponent(player1, player2, gameUI);
-                who = Who.SECOND_PLAYER;
+    public void placementOfFigures(Player player, Figure figure) {
+        if (player.getShips().size() < player.getField().getCountShips()) {
+            makeShip(player, figure);
+            if (player.canMakeShipOrNot(figure)) {
+                player.setShip(figure);
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
+                gameUI.print(player);
             } else {
-                moveOnTheOpponent(player2, player1, gameUI);
-                who = Who.FIRST_PLAYER;
+                gameUI.messageOfWrongNumberOrLetter(player.getName());
             }
+        } else if (player.getMines().size() < player.getField().getCountMines()) {
+            if (player.canMakeMineOrMinesweeperOrNot(figure.getPosition())) {
+                player.setMine(figure);
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
+                gameUI.print(player);
+            } else {
+                gameUI.messageOfWrongNumberOrLetter(player.getName());
+            }
+        }
+        else if (player.getMinesweepers().size() < player.getField().getCountMinesweepers()) {
+            if (player.canMakeMineOrMinesweeperOrNot(figure.getPosition())) {
+                player.setMinesweeper(figure);
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
+                gameUI.print(player);
+            } else {
+                gameUI.messageOfWrongNumberOrLetter(player.getName());
+            }
+        }
+        else if (player.getSubmarineList().size() < player.getCountSubmarines()) {
+            if (player.getField().getCellStatus(figure.getPosition()) == Cell.Status.EMPTY) {
+                player.setSubmarine(figure);
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
+                gameUI.print(player);
+            } else {
+                gameUI.messageOfWrongNumberOrLetter(player.getName());
+            }
+        }
+
+        gameUI.messageOfGetCoordinates(player);
+        if (player1.getSubmarineList().size() > 0 && player2.getSubmarineList().size() > 0) gameUI.messageOfPlayersReady();
+    }
+
+    private void makeShip(Player player, Figure ship) {
+        if (player.getShips().size() < player.getField().getOneCellShip()) {
+
+        } else if (player.getShips().size() < player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()) {
+            ship.setShipType(Ship.Type.TWO_CELLS);
+        } else if (player.getShips().size() < player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()
+                + player.getField().getThreeCellShip()) {
+            ship.setShipType(Ship.Type.THREE_CELLS);
+        } else if (player.getShips().size() < player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()
+                + player.getField().getThreeCellShip()
+                + player.getField().getFourCellShip()) {
+            ship.setShipType(Ship.Type.FOURTH_CELLS);
         }
     }
 
     @Override
-    public void placementOfFigures(Player player, GameUI gameUI) {
-        String decision = gameUI.decisionOfPlacementFigures(player.getName());
-        while (decision == null || !isNumeric(decision) && !(decision.equals("0")) && !(decision.equals("1"))) { // TODO изменить на кнопки вертикальный/горизонтальный
-            gameUI.messageOfWrongNumberOrLetter(player.getName());
-            decision = gameUI.decisionOfPlacementFigures(player.getName());
-        }
-
-        if (decision.equals("0")) {
-            gameUI.messageOfRandomPlacementFigures(player.getName());
-            RandomPlacements.getRandomField(player);
-
-        } else {
-            makeShips(player, gameUI);
-            player.setMines(makeAddMineOrMinesweeper(player, player.getCountMines(), gameUI ));
-            listeners.forEach(l -> l.gameUpdated(player.toString()));
-            gameUI.print(player, player.getNumber());
-            player.setMinesweepers(makeAddMineOrMinesweeper(player, player.getCountMinesweepers(), gameUI));
-            listeners.forEach(l -> l.gameUpdated(player.toString()));
-            gameUI.print(player, player.getNumber());
-            player.setSubmarines(makeSubmarines(player, gameUI));
-            listeners.forEach(l -> l.gameUpdated(player.toString()));
-        }
+    public void randomPlacement(Player player) {
+        gameUI.messageOfRandomPlacementFigures(player.getName());
+        RandomPlacements.getRandomField(player);
         listeners.forEach(l -> l.gameUpdated(player.toString()));
-        gameUI.print(player, player.getNumber());
-        gameUI.print(player, player.getOppNumber());
     }
 
-    private List<AdditionalArrangements> makeAddMineOrMinesweeper(Player player, int count, GameUI gameUI) {
-        List<AdditionalArrangements> list = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            gameUI.messageOfGetCoordinates(player.getName(), "минного поля");
-            AdditionalArrangements something = new AdditionalArrangements(gameUI.getCoordinates(player), AdditionalArrangements.Status.NOT_ACTIVATED);
-            while (!player.canMakeMineOrMinesweeperOrNot(something.getPosition())) {
-                gameUI.messageOfWrongNumberOrLetter(player.getName());
-                something.setPosition(gameUI.getCoordinates(player));
-            }
-            list.add(something);
-        }
-        return list;
-    }
-
-    private List<AdditionalArrangements> makeSubmarines(Player player, GameUI gameUI) {
-        List<AdditionalArrangements> list = new ArrayList<>();
-        for (int i = 0; i < player.getCountSubmarines(); i++) {
-            gameUI.messageOfGetCoordinates(player.getName(), "подлодки");
-            AdditionalArrangements submarine = new AdditionalArrangements(gameUI.getCoordinates(player), AdditionalArrangements.Status.NOT_ACTIVATED);
-            while (player.getField().getCellStatus(submarine.getPosition()) != Cell.Status.EMPTY) {
-                gameUI.messageOfWrongNumberOrLetter(player.getName());
-                gameUI.messageOfGetCoordinates(player.getName(), "подлодки");
-                submarine.setPosition(gameUI.getCoordinates(player));
-            }
-            list.add(submarine);
-            listeners.forEach(l -> l.gameUpdated(player.toString()));
-            gameUI.print(player, player.getNumber());
-        }
-        return list;
-    }
-
-
-    private void makeShips(Player player, GameUI gameUI) { // кол-во типов кораблей
-        int shipCellsCount = Ship.Type.values().length;
-        gameUI.messageOfGetCoordinates(player.getName(), "кораблей");
-        for(Ship.Type type : Ship.Type.values()) {
-            for (int ships = shipCellsCount; ships > 0; ships--) {
-                Ship ship = new Ship(new Coordinate(0, 0), type, Ship.Orientation.VERTICAL, Ship.Status.ALIVE);
-                ship.setShipType(type);
-                String orientation;
-                if (ship.getShipType() != Ship.Type.ONE_CELL) {
-                    orientation = gameUI.decisionOfShipOrientation(player.getName(), type.getString());
-                } else orientation = "0";
-                while (!(orientation.equals("0")) && !(orientation.equals("1"))) {
-                    gameUI.messageOfWrongNumberOrLetter(player.getName());
-                    orientation = gameUI.decisionOfShipOrientation(player.getName(), type.getString());
-                }
-                if (orientation.equals("0")) {
-                    ship.setOrientation(Ship.Orientation.VERTICAL);
-                } else ship.setOrientation(Ship.Orientation.HORIZONTAL);
-                String str = type.getString() + " клеточного корабля";
-                gameUI.messageOfGetCoordinates(player.getName(), str);
-                System.out.println();
-                ship.setStartingPosition(gameUI.getCoordinates(player));
-                if (ship.getOrientation() == Ship.Orientation.VERTICAL){
-                    while ((ship.getStartingPosition().getVertical() + Integer.parseInt(ship.getShipType().getString())) - 1 >= PlayingField.getSize()) {
-                        gameUI.messageOfWrongNumberOrLetter(player.getName());
-                        ship.setStartingPosition(gameUI.getCoordinates(player));
-                    }
-                } else {
-                    while ((ship.getStartingPosition().getHorizontal() + Integer.parseInt(ship.getShipType().getString())) - 1 >= PlayingField.getSize()) {
-                        gameUI.messageOfWrongNumberOrLetter(player.getName());
-                        ship.setStartingPosition(gameUI.getCoordinates(player));
-                    }
-                }
-                while (!player.canMakeShipOrNot(ship)) {
-                    gameUI.messageOfWrongNumberOrLetter(player.getName());
-                    ship.setStartingPosition(gameUI.getCoordinates(player));
-                }
-                player.setShip(ship);
-
-                listeners.forEach(l -> l.gameUpdated(player.toString()));
-                gameUI.print(player, player.getNumber());
-            }
-            shipCellsCount--;
-        }
-    }
-
-    private boolean cellIsOpponentMine(List<AdditionalArrangements> oppMine, Coordinate coordinate) {
-        for (AdditionalArrangements mine : oppMine) {
+    public boolean cellIsOpponentMine(List<Figure> oppMine, Coordinate coordinate) {
+        for (Figure mine : oppMine) {
             if (mine.getPosition().equals(coordinate)) return true;
         }
         return false;
     }
 
-    public void moveOnTheOpponent(Player player, Player playerAttacked, GameUI gameUI) {
-        Cell.Status cellStatus = Cell.Status.UNKNOWN;
-
-        Coordinate point;
-        while ((cellStatus == Cell.Status.UNKNOWN || cellStatus == Cell.Status.SHIP) && (shipsLifeStatus(player.getShips()) && shipsLifeStatus(playerAttacked.getShips()))) {
-            gameUI.messageOfWhoseParty(player.getName());
-
-            if (player.getOpponentShipCells().size() > 0) { // если известны координаты частей кораблей противника
-                String decision = gameUI.decisionOfUsingOpponentsPartOfTheShip(player.getName());
-                while (!(decision.equals("0")) && !(decision.equals("1"))) {
-                    gameUI.messageOfWrongNumberOrLetter(player.getName());
-                    decision = gameUI.decisionOfUsingOpponentsPartOfTheShip(player.getName());
+    public void moveOnTheOpponent(Player player, Player playerAttacked, Coordinate coordinate) {
+        if (player.getShotFromASubmarineList().size() > 0) { // если противник попал в подлодку
+            coordinate = player.getShotFromASubmarine();
+        } else {
+            if (player.getOpponentShipCells().size() != 0) { // если известны координаты корабля противника
+                if (gameUI.decisionOfUsingOpponentsPartOfTheShip(player.getName()) == 1) {
+                    coordinate = player.getOpponentShipCell();
+                    flagOfUsingOppCell = true;
                 }
-                if (decision.equals("1")) point = player.getOpponentShipCell();
-                else point = gameUI.getCoordinates(player);
-            } else if (player.getShotFromASubmarineList().size() > 0) {
-                point = player.getShotFromASubmarine();
-            } else point = gameUI.getCoordinates(player);
-
-            if (player.getOpponentMines().size() > 0) { // если известно местоположение мин противника
-                while (cellIsOpponentMine(player.getOpponentMines(), point)) {
-                    gameUI.messageOfExistenceOpponentsMineOnThisCell(player.getName());
-                    point = gameUI.getCoordinates(player);
-                }
-            }
-
-            gameUI.messageWhereDidMove(player.getName(), point);
-
-            cellStatus = playerAttacked.getField().getCellStatus(point);
-            statusAttacks(cellStatus, point, player, playerAttacked, gameUI);
-
-            gameUI.messageOfWhoseField(playerAttacked.getName());
-            listeners.forEach(l -> l.gameUpdated(player.toString()));
-            //gameUI.print(player, player.getOppNumber());
-
-            if (gameUI instanceof WindowUI) {
-                gameUI.messageOfWhoseField(playerAttacked.getName());
-                gameUI.print(playerAttacked, playerAttacked.getNumber());
-            }
-            else {
-                gameUI.messageOfWhoseField(player.getName());
-                gameUI.print(player, player.getNumber());
             }
         }
+
+        if (player.getOpponentMines().size() > 0 && cellIsOpponentMine(player.getOpponentMines(), coordinate))
+            gameUI.messageOfExistenceOpponentsMineOnThisCell(player.getName());
+
+        gameUI.messageWhereDidMove(player.getName(), coordinate);
+        statusAttacks(playerAttacked.getField().getCellStatus(coordinate), coordinate, player, playerAttacked);
+
+        finish(player1, player2);
     }
 
-    private void statusAttacks(Cell.Status cellStatus, Coordinate coordinate, Player player, Player playerAttacked, GameUI gameUI) {
+    private void statusAttacks(Cell.Status cellStatus, Coordinate coordinate, Player player, Player playerAttacked) {
         switch (cellStatus) {
             case SHIP -> {
                 player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
                 playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
+
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
 
                 if (!player.hurtOrKill(playerAttacked.getField(), playerAttacked.findShip(coordinate.getVertical(), coordinate.getHorizontal()))) {
                     gameUI.messageOfShipState(player.getName(), "ранил");
@@ -228,33 +148,50 @@ public class LocalGame implements Game {
                 gameUI.messageOfEmptyCell(player.getName());
                 player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
                 playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
+
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
             }
             case MARKED -> gameUI.messageOfMarkedCell(player.getName());
             case MINE -> {
-                for (int i = 0; i < playerAttacked.getMines().size(); i++) {
-                    if (playerAttacked.getMines().get(i).getPosition().equals(coordinate)) {
-                        playerAttacked.getMines().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
+                boolean flag = false;
+                for (int i = 0; i < player.getOpponentMines().size(); i++) {
+                    if (player.getOpponentMines().get(i).getPosition().equals(coordinate)) {
+                        flag = true;
+                        gameUI.messageOfExistenceOpponentsMineOnThisCell(player.getName());
+                        break;
+                    }
+                }
+                if (!flag) {
+                    for (int i = 0; i < playerAttacked.getMines().size(); i++) {
+                        if (playerAttacked.getMines().get(i).getPosition().equals(coordinate)) {
+                            playerAttacked.getMines().get(i).setStatus(Figure.Status.KILLED); break;
+                        }
+                    }
+                    player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
+                    playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
+
+                    listeners.forEach(l -> l.gameUpdated(player.toString()));
+
+                    gameUI.messageOfEntryOfOpponentsMineOrMinesweeper(player.getName(), "мину","корабля");
+                    Coordinate coordinates = gameUI.getCoordinates(player);
+                    while (player.getField().getCellStatus(coordinates) != Cell.Status.SHIP) {
+                        gameUI.messageThatYouAreALiar(player.getName(), "корабля");
+                        coordinates = gameUI.getCoordinates(player);
+                    }
+                    playerAttacked.setOpponentShipCells(coordinates);
+                }
+
+            }
+            case MINESWEEPER -> {
+                for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
+                    if (playerAttacked.getMinesweepers().get(i).getPosition().equals(coordinate)) {
+                        playerAttacked.getMinesweepers().get(i).setStatus(Figure.Status.KILLED); break;
                     }
                 }
                 player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
                 playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
 
-                gameUI.messageOfEntryOfOpponentsMineOrMinesweeper(player.getName(), "мину","корабля");
-                Coordinate coordinates = gameUI.getCoordinates(player);
-                while (player.getField().getCellStatus(coordinates) != Cell.Status.SHIP) {
-                    gameUI.messageThatYouAreALiar(player.getName(), "корабля");
-                    coordinates = gameUI.getCoordinates(player);
-                }
-                playerAttacked.setOpponentShipCells(coordinates);
-            }
-            case MINESWEEPER -> {
-                for (int i = 0; i < playerAttacked.getMinesweepers().size(); i++) {
-                    if (playerAttacked.getMinesweepers().get(i).getPosition().equals(coordinate)) {
-                        playerAttacked.getMinesweepers().get(i).setStatus(AdditionalArrangements.Status.ACTIVATED); break;
-                    }
-                }
-                player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
-                playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
 
                 gameUI.messageOfEntryOfOpponentsMineOrMinesweeper(player.getName(), "минного тральщика","мины");
                 Coordinate coordinates = gameUI.getCoordinates(player);
@@ -262,16 +199,18 @@ public class LocalGame implements Game {
                     gameUI.messageThatYouAreALiar(player.getName(), "мины");
                     coordinates = gameUI.getCoordinates(player);
                 }
-                for (AdditionalArrangements mine : player.getMines()) {
+                for (Figure mine : player.getMines()) {
                     if (mine.getPosition().equals(coordinates)) playerAttacked.setOpponentMines(mine);
                 }
 
             }
             case SUBMARINE -> {
-                playerAttacked.getSubmarineList().get(0).setStatus(AdditionalArrangements.Status.ACTIVATED);
+                playerAttacked.getSubmarineList().get(0).setStatus(Figure.Status.KILLED);
 
                 player.getOpponentsField().setCellStatus(coordinate, Cell.Status.MARKED);
                 playerAttacked.getField().setCellStatus(coordinate, Cell.Status.MARKED);
+
+                listeners.forEach(l -> l.gameUpdated(player.toString()));
 
                 gameUI.messageOfEntryOfSubmarine(player.getName());
                 playerAttacked.setShotFromASubmarine(coordinate);
@@ -279,14 +218,13 @@ public class LocalGame implements Game {
         }
     }
 
-    @Override
-    public void finish(Player player1, Player player2, GameUI gameUI) {
+    public void finish(Player player1, Player player2) {
         if (!shipsLifeStatus(player2.getShips())) gameUI.messageOfFinish(player1.getName());
         else if (!shipsLifeStatus(player1.getShips())) gameUI.messageOfFinish(player2.getName());
     }
 
-    public boolean shipsLifeStatus(List<Ship> ships) {
-        for (Ship ship : ships) {
+    public boolean shipsLifeStatus(List<Figure> ships) {
+        for (Figure ship : ships) {
             if (ship.getStatus() == Ship.Status.ALIVE) return true;
         }
         return false;
@@ -308,5 +246,17 @@ public class LocalGame implements Game {
 
     public Player getPlayer2() {
         return player2;
+    }
+
+    public List<GameUpdateListener> getListeners() {
+        return listeners;
+    }
+
+    public Boolean getFlagOfUsingOppCell() {
+        return flagOfUsingOppCell;
+    }
+
+    public void setFlagOfUsingOppCell(Boolean flagOfUsingOppCell) {
+        this.flagOfUsingOppCell = flagOfUsingOppCell;
     }
 }

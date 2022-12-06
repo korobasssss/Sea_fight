@@ -1,11 +1,11 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
-import cs.vsu.ru.Korobeynikova_A_V.LocalGame;
 import cs.vsu.ru.Korobeynikova_A_V.Player;
 import cs.vsu.ru.Korobeynikova_A_V.field.Cell;
 import cs.vsu.ru.Korobeynikova_A_V.field.Coordinate;
 import cs.vsu.ru.Korobeynikova_A_V.field.PlayingField;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class ConsoleUI implements GameUI{
@@ -14,22 +14,37 @@ public class ConsoleUI implements GameUI{
     MessagesForUI messagesForUI = new MessagesForUI();
 
     @Override
-    public String setYourName(LocalGame.Who who) {
-        emptyLine();
-        System.out.print(messagesForUI.setYourName().formatted(who));
-        return scanner.nextLine();
-    }
-
-    @Override
     public void messageOfPlayersReady() {
         emptyLine();
         System.out.print(messagesForUI.messageOfPlayersReady());
     }
 
     @Override
-    public void messageOfGetCoordinates(String name, String whatPlacement) {
+    public void messageOfGetCoordinates(Player player) {
         emptyLine();
-        System.out.print(messagesForUI.messageOfGetCoordinates().formatted(name, whatPlacement));
+        if (player.getShips().size() >= player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()
+                + player.getField().getThreeCellShip()
+                + player.getField().getFourCellShip()) {
+            if (player.getMinesweepers().size() == player.getField().getCountMinesweepers()) System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "подлодки"));
+            else if (player.getMines().size() == player.getField().getCountMines()) System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "минного тральщика"));
+            else System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "мины"));
+        }
+
+        else if (player.getShips().size() >= player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()
+                + player.getField().getThreeCellShip()) {
+            System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "4 клеточного"));
+        }
+
+        else if (player.getShips().size() >= player.getField().getOneCellShip()
+                + player.getField().getTwoCellShip()) {
+            System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "3 клеточного"));
+        }
+
+        else if (player.getShips().size() >= player.getField().getOneCellShip()) {
+            System.out.println(messagesForUI.messageOfGetCoordinates().formatted(player.getName(), "2 клеточного"));
+        }
     }
 
     @Override
@@ -95,10 +110,20 @@ public class ConsoleUI implements GameUI{
     }
 
     @Override
-    public String decisionOfUsingOpponentsPartOfTheShip(String name) {
+    public void messageOfNotYourParty(String name) {
+        System.out.println(messagesForUI.messageOfNotYourParty().formatted(name));
+    }
+
+    @Override
+    public Integer decisionOfUsingOpponentsPartOfTheShip(String name) {
         emptyLine();
         System.out.print(messagesForUI.decisionOfUsingOpponentsPartOfTheShip().formatted(name));
-        return scanner.nextLine();
+        String str = scanner.nextLine();
+        while (Integer.parseInt(str) != 0 && Integer.parseInt(str) != 1) {
+            messageOfWrongNumberOrLetter(name);
+            str = scanner.nextLine();;
+        }
+        return Integer.parseInt(str);
     }
 
     @Override
@@ -154,28 +179,22 @@ public class ConsoleUI implements GameUI{
         System.out.print(messagesForUI.messageOfFinish().formatted(name));
     }
 
-
     @Override
-    public void print(Player player, LocalGame.Who who) {
+    public void print(Player player) {
         emptyLine();
         System.out.println();
-        if (who == LocalGame.Who.FIRST_OPP || who == LocalGame.Who.SECOND_OPP) {
-            for (Cell[] cells : player.getField().getField()) {
-                for (int col = 0; col < player.getField().getField().length; col++) {
-                    System.out.print(cells[col].getVisual());
-                }
-                System.out.println();
+        for (Cell[] cells : player.getField().getField()) {
+            for (int col = 0; col < player.getField().getField().length; col++) {
+                System.out.print(cells[col].getVisual());
             }
-        } else {
-            for (Cell[] cells : player.getOpponentsField().getField()) {
-                for (int col = 0; col < player.getOpponentsField().getField().length; col++) {
-                    System.out.print(cells[col].getVisual());
-                }
-                System.out.println();
-            }
+            System.out.println();
         }
-
-        System.out.println();
+        for (Cell[] cells : player.getOpponentsField().getField()) {
+            for (int col = 0; col < player.getOpponentsField().getField().length; col++) {
+                System.out.print(cells[col].getVisual());
+            }
+            System.out.println();
+        }
     }
 
     private void emptyLine() {
