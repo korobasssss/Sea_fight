@@ -21,6 +21,10 @@ public class Cell {
         this.visual = setVisual(status);
     }
 
+    public Cell(char visual) {
+        this.visual = visual;
+    }
+
     public char getVisual() {
         return visual;
     }

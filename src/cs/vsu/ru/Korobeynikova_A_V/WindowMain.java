@@ -20,8 +20,5 @@ public class WindowMain {
         StartWindow startWindow = new StartWindow(player1, player2, game, windowUI);
         startWindow.setVisible(true);
 
-
-//        PlayingWindow mainWindow = new PlayingWindow(game);
-//        mainWindow.setVisible(true);
     }
 }

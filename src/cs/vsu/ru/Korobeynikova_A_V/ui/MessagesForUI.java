@@ -1,93 +1,100 @@
 package cs.vsu.ru.Korobeynikova_A_V.ui;
 
 
-public class MessagesForUI{ // todo https://docs.oracle.com/javase/tutorial/i18n/intro/after.html
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+
+
+public class MessagesForUI{
+
+    private String language = "en";
+    private String country = "US";
+    private Locale currentLocale = new Locale(language, country);
+    private ResourceBundle messages = ResourceBundle.getBundle("message", currentLocale);
+
 
     public String setYourName() {
-        return "Игрок %s, введите ваше имя: ";
+        return messages.getString("setYourName");
     }
 
     public String messageOfPlayersReady() {
-        return "Оба игрока готовы к бою";
+        return messages.getString("messageOfPlayersReady");
     }
 
     public String messageOfGetCoordinates() {
-        return "Игрок %s, введите координаты %s";
+        return messages.getString("messageOfGetCoordinates");
     }
 
     public String getCoordinates() {
-        return "Игрок %s, введите координаты";
+        return messages.getString("getCoordinates");
     }
 
     public String messageOfWrongNumberOrLetter() {
-        return "Игрок %s, ваш ввод неверный или расстановка невозможна";
+        return messages.getString("messageOfWrongNumberOrLetter");
     }
 
     public String messageWhereDidMove() {
-        return "Игрок %s походил по горизонтали на %s и по вертикали на %s";
+        return messages.getString("messageWhereDidMove");
     }
 
     public String decisionOfPlacementFigures() {
-        return "Игрок %s, вы хотите случайную расстановку(введите 0) или желаете самостоятельно расставить корабли(введите 1)? ";
+        return messages.getString("decisionOfPlacementFigures");
     }
 
     public String messageOfRandomPlacementFigures() {
-        return "Игрок %s, ваша случайная расстановка кораблей: ";
+        return messages.getString("messageOfRandomPlacementFigures");
     }
 
     public String decisionOfShipOrientation() {
-        return "Игрок %s, клеточный корабль вертикальный(введите 0) или горизонтальный(введите 1)?  ";
+        return messages.getString("decisionOfShipOrientation");
     }
 
     public String messageOfWhoseParty() {
-        return "Игрок %s, делайте ход. ";
+        return messages.getString("messageOfWhoseParty");
     }
 
     public String messageOfNotYourParty(){
-        return "Игрок %s, сейчас не ваш ход!";
+        return messages.getString("messageOfNotYourParty");
     }
 
     public String decisionOfUsingOpponentsPartOfTheShip() {
-        return "Игрок %s, желаете ли вы воспользоваться координатами части корабля противника? (0 - нет, 1 - да)";
+        return messages.getString("decisionOfUsingOpponentsPartOfTheShip");
     }
 
     public String messageOfExistenceOpponentsMineOnThisCell() {
-        return "Игрок %s, вы знаете, что там стоит мина противника, выберите другую клетку:";
+        return messages.getString("messageOfExistenceOpponentsMineOnThisCell");
     }
 
     public String messageOfShipState() {
-        return "Игрок %s %s корабль другого игрока";
+        return messages.getString("messageOfShipState");
     }
 
     public String messageOfMarkedCell() {
-        return "Игрок %s, эта зона уже поражена";
+        return messages.getString("messageOfMarkedCell");
     }
 
     public String messageOfEmptyCell() {
-        return "Игрок %s, вы попали мимо.";
+        return messages.getString("messageOfEmptyCell");
     }
 
     public String messageOfEntryOfOpponentsMineOrMinesweeper() {
-        return "Игрок %s, вы попали на %s! :( Введите координаты клетки %s";
+        return messages.getString("messageOfEntryOfOpponentsMineOrMinesweeper");
     }
 
     public String messageThatYouAreALiar() {
-        return "Игрок %s, не обманывайте, там у вас нет %s, введите координаты заново!";
+        return messages.getString("messageThatYouAreALiar");
     }
 
     public String messageOfEntryOfSubmarine() {
-        return "Игрок %s, вы попали в подводную лодку ! Ожидайте выстрела на ваше поле!";
+        return messages.getString("messageOfEntryOfSubmarine");
     }
 
     public String messageOfWhoseField() {
-        return "Поле игрока %s: ";
+        return messages.getString("messageOfWhoseField");
     }
 
     public String messageOfFinish() {
-        return "Игрок %s выиграл!!!!!!";
-    }
-
-    public String print() {
-        return null;
+        return messages.getString("messageOfFinish");
     }
 }

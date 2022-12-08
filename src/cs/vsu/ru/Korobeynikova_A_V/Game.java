@@ -25,6 +25,8 @@ public interface Game {
 
     void addGameUpdateListener(GameUpdateListener listener);
 
+    boolean shipsLifeStatus(List<Figure> ships);
+
     Player getPlayer1();
 
     Player getPlayer2();

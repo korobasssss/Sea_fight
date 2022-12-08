@@ -54,8 +54,6 @@ public class FieldTableModel extends AbstractTableModel implements GameUpdateLis
         this.field = field;
     }
 
-    public void setValueAt(Cell value, int row, int col) { field[row][col] = value;}
-
     @Override
     public void gameUpdated(String toString) {
         fireTableDataChanged();
